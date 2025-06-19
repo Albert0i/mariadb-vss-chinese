@@ -37,7 +37,10 @@
           box.className = 'bg-white shadow-md rounded p-5 text-left';
           box.innerHTML = `
             <p class="text-gray-800 mb-2">💬 ${item.textChi}</p>
-            <p class="text-sm text-gray-500">🆔 ${item.id} | 👁️‍🗨️ Visited: ${item.visited}</p>
+            <p class="text-sm text-gray-500">
+  🆔 <a href="/details/${item.id}" class="text-blue-500 hover:underline">${item.id}</a> |
+  👁️‍🗨️ Visited: ${item.visited}
+</p>        
           `;
           container.appendChild(box);
         });

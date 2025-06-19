@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>詳細內容</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white min-h-screen px-4 py-12 flex flex-col items-center">
+  <h1 class="text-3xl font-bold text-gray-700 mb-6">📄 詳細資料</h1>
+
+  <div id="detail" class="w-full max-w-xl bg-gray-50 shadow-md rounded p-6 text-left text-gray-700 text-base">
+    <p>🆔 <span id="id"></span></p>
+    <p class="mt-2">💬 <strong>內容：</strong><span id="textChi"></span></p>
+    <p class="mt-2">👁️‍🗨️ <strong>被查看次數：</strong><span id="visited"></span></p>
+    <p class="mt-2">🕒 <strong>建立時間：</strong><span id="createdAt"></span></p>
+    <p class="mt-2">🔄 <strong>更新時間：</strong><span id="updatedAt"></span></p>
+    <p class="mt-2">🔖 <strong>更新代碼：</strong><span id="updateIdent"></span></p>
+  </div>
+
+  <div class="mt-10 flex gap-6 justify-center">
+    <a href="javascript:history.back()" class="text-blue-500 hover:underline">← 回上一頁</a>
+    <a href="/" class="text-blue-500 hover:underline">← 回首頁</a>
+  </div>
+
+  <script>
+    const id = '<%= id %>';
+    fetch(`/api/v1/details?id=${id}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('id').textContent = data.id;
+        document.getElementById('textChi').textContent = data.textChi;
+        document.getElementById('visited').textContent = data.visited;
+        document.getElementById('createdAt').textContent = data.createdAt;
+        document.getElementById('updatedAt').textContent = data.updatedAt;
+        document.getElementById('updateIdent').textContent = data.updateIdent;
+      })
+      .catch(() => {
+        document.getElementById('detail').innerHTML = '<p class="text-red-500">⚠️ 無法取得資料。</p>';
+      });
+  </script>
+</body>
+</html>

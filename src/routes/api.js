@@ -1,6 +1,24 @@
 import express from 'express';
 const router = express.Router();
 
+// GET /api/v1/details?id=xxx
+router.get('/details', (req, res) => {
+  const id = parseInt(req.query.id, 10);
+
+  // Simulated mock data (replace with DB lookup in production)
+  const mockData = {
+    id,
+    textChi: '打掃房子是保持整潔的好方法',
+    visited: 1,
+    createdAt: '2025-06-18 16:42:06.000',
+    updatedAt: '2025-06-19 12:44:47.000',
+    updateIdent: 1
+  };
+
+  res.json(mockData);
+});
+
+
 // GET /api/v1/stats
 router.get('/stats', (req, res) => {
   res.status(200).json({
@@ -36,6 +54,15 @@ router.post('/search', (req, res) => {
 export default router;
 
 /*
+{
+id: 10,
+textChi: "打掃房子是保持整潔的好方法",
+visited:	1,
+createdAt: "2025-06-18 16:42:06.000",	
+updatedAt: "2025-06-19 12:44:47.000",	
+updateIdent: 1
+}
+
 [
     { textChi: '時間流逝，珍惜當下才是最重要的。', distance: 0.07051803387014799, id: 127 },
     { textChi: '找到適合自己的道路，勇往直前。', distance: 0.07872054752784197, id: 194 },

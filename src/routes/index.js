@@ -13,4 +13,9 @@ router.get('/stats', (req, res) => res.render('stats'));
 // Features page
 router.get('/feature', (req, res) => res.redirect('https://github.com/Albert0i/mariadb-vss-chinese/blob/main/README.md'));
 
+// Details page
+router.get('/details/:id', (req, res) => {
+    res.render('details', { id: req.params.id });
+  });
+
 export default router;

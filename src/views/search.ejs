@@ -40,7 +40,10 @@
         block.className = 'bg-gray-100 rounded p-4 shadow text-left';
         block.innerHTML = `
           <p class="text-gray-800 text-base mb-1">💬 ${item.textChi}</p>
-          <p class="text-sm text-gray-500">🆔 ${item.id} | 距離: ${item.distance.toFixed(5)}</p>
+          <p class="text-sm text-gray-500">
+  🆔 <a href="/details/${item.id}" class="text-blue-500 hover:underline">${item.id}</a> |
+  距離: ${item.distance.toFixed(5)}
+</p>
         `;
         container.appendChild(block);
       });
