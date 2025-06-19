@@ -171,7 +171,7 @@ console.log("query:", query);
 console.log("Document:", topSimilarDocument);
 ```
 
-Which is a good start as it does not involve any database. 
+Which is a good start! 
 
 
 #### III. [Seeding](https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding)
@@ -197,11 +197,14 @@ npx prisma db seed
 
 ![alt seeding](img/seeding.JPG)
 
-Depending on the machine, it may take several hours or a day... 
+Depending on the machine, it may take several hours or days... AFter that verify if there is duplicated entry with: 
+```
+SELECT * FROM documents WHERE updateIdent <> 0; 
+```
 
 
 #### IV. Finding the documetns 
-Most of the code remains the same, we only add update to `visited` field so that we can check to see if search results converge. 
+Most of the code remains the same, we only add update to `visited` field so that we can check to see search results. 
 ```
 export async function findSimilarDocuments(document, limit = 3) {
     const { vector } = await context.getEmbeddingFor(removeWords(document));
@@ -241,6 +244,15 @@ Run command to find the documents:
 ```
 npm run find
 ```
+![alt find-1](img/find-1.JPG)
+
+Verify search results with: 
+```
+SELECT * FROM documents WHERE visited <> 0; 
+```
+
+![alt search-results](img/search-results.JPG)
+
 
 
 #### V. 
