@@ -197,7 +197,7 @@ npx prisma db seed
 
 ![alt seeding](img/seeding.JPG)
 
-Depending on the machine, it may take several hours or days... AFter that verify if there is duplicated entry with: 
+Depending on the machine, it may take hours or even days... AFter that verify if there is duplicated entry with: 
 ```
 SELECT * FROM documents WHERE updateIdent <> 0; 
 ```
