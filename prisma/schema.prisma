@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model documents {
+  id          Int                         @id @default(autoincrement())
+  textChi     String                      @unique(map: "textChi") @db.VarChar(512)
+  visited     Int?                        @default(0)
+  embedding   Unsupported("vector(4096)")
+  createdAt   DateTime?                   @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime?                   @db.Timestamp(0)
+  updateIdent Int?                        @default(0)
+
+  @@index([embedding], map: "embedding")
+}
