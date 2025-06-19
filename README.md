@@ -39,8 +39,7 @@ npx --no node-llama-cpp inspect estimate ./src/models/ggml-model-q2_k.gguf
 ![alt f16](img/f16.JPG)
 
 **Suggestion from AI**
-
-Your GPU **can handle models up to around 15GB VRAM usage**, but for **efficient performance**, models should **stay below 80% of total VRAM** (~12GB). If you want **bigger models**, you may need a GPU with more memory or offload layers to **CPU RAM (slower but possible).**
+> Your GPU **can handle models up to around 15GB VRAM usage**, but for **efficient performance**, models should **stay below 80% of total VRAM** (~12GB). If you want **bigger models**, you may need a GPU with more memory or offload layers to **CPU RAM (slower but possible).**
 
 1. ggml-model-q2_k.gguf (2.73G)
 2. ggml-model-q4_k.gguf (3.92G)
