@@ -51,7 +51,7 @@ To strike a balance between speed and accuracy, I opt `ggml-model-q4_k.gguf` (3.
 
 I have the AI generated 1,200 sentences in traditional Chinese and put it in an array for sake of simplicity. A more realistic scenario would load the data from [Oracle](https://en.wikipedia.org/wiki/Oracle) or by parsing a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file, for example. 
 
-It is *crucial* to choose the right model in the first place, change of model involves re-creating all vector embeddings and takes hours and even days in time. 
+It is *crucial* to choose the right model in the first place, change of model involves re-creating all vector embeddings may take hours or even days. 
 
 
 #### II. [Using Embedding](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md)
