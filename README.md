@@ -254,25 +254,11 @@ SELECT * FROM documents WHERE visited <> 0;
 ![alt search-results](img/search-results.JPG)
 
 
-
-#### V. 
+#### V. Bibliography 
 1. [Choosing a Model](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/choosing-a-model.md)
 2. [Using Embedding](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md)
-3. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
-
-npx --no node-llama-cpp inspect gpu
-
-
-npx --no node-llama-cpp inspect estimate ./src/models/ggml-model-q4_k.gguf
-
-
-npx --no node-llama-cpp inspect estimate ./src/models/ggml-model-q8_0.gguf
-
-
-npx --no node-llama-cpp inspect estimate ./src/models/ggml-model-f16.gguf
-
-
-npx --no node-llama-cpp chat --prompt 'Hi there' ./src/models/ggml-model-q8_0.gguf
+3. [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries)
+4. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
 
 #### Epilogue
