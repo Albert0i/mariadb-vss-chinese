@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white min-h-screen flex flex-col items-center py-20 px-4">
+  <h1 class="text-3xl font-semibold text-gray-800 mb-8">語意搜尋</h1>
+
+  <form id="searchForm" class="w-full max-w-md space-y-4">
+    <input autofocus type="text" id="query" name="query" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" />
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">提交</button>
+  </form>
+
+  <!-- Responsive results layout -->
+  <div id="results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-5xl mt-10 px-2"></div>
+
+  <a href="/" class="mt-12 text-blue-500 hover:underline">← 回首頁</a>
+
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = document.getElementById('query').value.trim();
+      if (!query) return;
+
+      const res = await fetch('/api/v1/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+
+      const data = await res.json();
+      const container = document.getElementById('results');
+      container.innerHTML = '';
+
+      data.forEach(item => {
+        const block = document.createElement('div');
+        block.className = 'bg-gray-100 rounded p-4 shadow text-left';
+        block.innerHTML = `
+          <p class="text-gray-800 text-base mb-1">💬 ${item.textChi}</p>
+          <p class="text-sm text-gray-500">🆔 ${item.id} | 距離: ${item.distance.toFixed(5)}</p>
+        `;
+        container.appendChild(block);
+      });
+    });
+  </script>
+</body>
+</html>
