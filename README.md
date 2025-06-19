@@ -49,7 +49,7 @@ Your GPU **can handle models up to around 15GB VRAM usage**, but for **efficient
 
 To strike a balance between speed and accuracy, I opt `ggml-model-q4_k.gguf` (3.92G) instead of `ggml-model-q8_0.gguf` (6.85G). A short comparison is in [here](compare.md). Both of them generate vector of 4096 dimensions. 
 
-I have the AI generated 1,200 sentences in traditional Chinese and put it in an array for sake of simplicity. A more realistic scenario would load the data from [Oracle](https://en.wikipedia.org/wiki/Oracle) or by parsing a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file, just for example. 
+I have the AI generated 1,200 sentences in traditional Chinese and put it in an array for sake of simplicity. A more realistic scenario would load the data from [Oracle](https://en.wikipedia.org/wiki/Oracle) or by parsing a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file, for example. 
 
 It is *crucial* to choose the right model in the first place, change of model involves re-creating all vector embeddings and takes hours and even days in time. 
 
