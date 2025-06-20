@@ -10,9 +10,11 @@
   <h1 class="text-3xl font-semibold text-gray-800 mb-8">📊 統計頁面</h1>
   
   <% if (stats) { %>
-    <div id="meta" class="text-lg text-gray-600 mb-2 space-y-2">
-      <p>🔧 使用資料庫版本：<strong><%= stats.version %></strong></p>
+    <div id="meta" class="text-lg text-gray-600 mb-2 space-y-1">
+      <p>🔧 資料庫版本：<strong><%= stats.version %></strong></p>
+      <p>🔧 使用的模型：<%= stats.model %></p>
       <p>📄 全部文件數：<strong><%= stats.documents %></strong></p>
+      <p>📄 資料總容量：<strong><%= stats.size %> MB</strong></p>
       <p>🎯 搜尋命中數：<strong><%= stats.visited %></strong></p>
     </div>
 

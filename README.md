@@ -258,7 +258,7 @@ SELECT * FROM documents WHERE visited <> 0;
 1. [Choosing a Model](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/choosing-a-model.md)
 2. [Using Embedding](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md)
 3. [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries)
-4. [Transactions and batch queries](https://www.prisma.io/docs/orm/prisma-client/queries/transactions)
+4. [CRUD](https://www.prisma.io/docs/orm/prisma-client/queries/crud)
 5. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
 

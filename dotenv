@@ -6,3 +6,7 @@ MODEL_NAME=ggml-model-q4_k.gguf
 HOST=localhost
 
 PORT=3000
+
+MAX_FIND=10
+
+MAX_RETURN=100

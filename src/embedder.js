@@ -38,6 +38,17 @@ export async function addDocument(document) {
                     UPDATE updateIdent = updateIdent + 1;
               `;
 }
+/*
+Even if the rest of the row is identical, you're always incrementing updateIdent, 
+which means the row is actually being modified. And in MySQL/MariaDB, when a 
+duplicate key triggers an update that changes the row, the affected rows count is 2
+
+- 1 row affected → a new row was inserted
+- 2 rows affected → a duplicate key was found, and the row was updated
+- 0 rows affected → a duplicate key was found, but the update didn’t change anything (e.g., SET col = col)
+
+So in your case, since updateIdent = updateIdent + 1 always changes the row, you’ll always get 2.
+*/
 
 export async function findSimilarDocuments(document, limit = 3) {
     const { vector } = await context.getEmbeddingFor(removeWords(document));
