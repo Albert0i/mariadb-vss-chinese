@@ -50,7 +50,7 @@ duplicate key triggers an update that changes the row, the affected rows count i
 So in your case, since updateIdent = updateIdent + 1 always changes the row, you’ll always get 2.
 */
 
-export async function findSimilarDocuments(document, limit = 3) {
+export async function findSimilarDocuments(document, limit = 5) {
     const { vector } = await context.getEmbeddingFor(removeWords(document));
 
     // Find similar documents 

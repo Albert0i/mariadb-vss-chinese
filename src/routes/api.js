@@ -108,22 +108,3 @@ router.get('/details', async (req, res) => {
 });
 
 export default router;
-
-/*
-{
-id: 10,
-textChi: "打掃房子是保持整潔的好方法",
-visited:	1,
-createdAt: "2025-06-18 16:42:06.000",	
-updatedAt: "2025-06-19 12:44:47.000",	
-updateIdent: 1
-}
-
-[
-    { textChi: '時間流逝，珍惜當下才是最重要的。', distance: 0.07051803387014799, id: 127 },
-    { textChi: '找到適合自己的道路，勇往直前。', distance: 0.07872054752784197, id: 194 },
-    { textChi: '珍惜身邊的人，讓生活更有意義。', distance: 0.08874166667257355, id: 200 },
-    { textChi: '人生旅途充滿挑戰，但也帶來成長。', distance: 0.09129302193130606, id: 158 },
-    { textChi: '生活需要熱情與希望。', distance: 0.09197816264352066, id: 191 }
-]
-*/
