@@ -69,4 +69,8 @@ router.get('/details/:id', async (req, res) => {
   res.render('details', { record });
 });
 
+router.get('/feature', (req, res) => {
+  res.redirect('/mariadb-vss-chinese.pdf');
+});
+
 export default router;
