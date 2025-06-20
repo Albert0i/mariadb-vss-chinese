@@ -3,55 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Statistics</title>
+  <title>統計資料</title>
   <link rel="stylesheet" href="/css/tailwind.css" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
-<body class="bg-gray-50 py-16 px-6 text-center">
-  <h1 class="text-3xl font-bold text-gray-700 mb-6">📊 系統統計資訊</h1>
+<body class="bg-white px-4 py-12 flex flex-col items-center min-h-screen">
+  <h1 class="text-3xl font-semibold text-gray-800 mb-8">📊 統計頁面</h1>
+  
+  <% if (stats) { %>
+    <div id="meta" class="text-lg text-gray-600 mb-2 space-y-2">
+      <p>🔧 使用資料庫版本：<strong><%= stats.version %></strong></p>
+      <p>📄 全部文件數：<strong><%= stats.documents %></strong></p>
+      <p>🎯 搜尋命中數：<strong><%= stats.visited %></strong></p>
+    </div>
 
-  <div id="meta" class="text-lg text-gray-600 mb-8 space-y-2"></div>
+    <div id="results" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full max-w-6xl mt-2 px-2">
+      <% stats.results.forEach(item => { %>
+        <div class="bg-gray-100 rounded p-4 shadow text-left">
+          <p class="text-gray-800 text-base mb-1">💬 <%= item.textChi %></p>
+          <p class="text-sm text-gray-500">
+            🆔 <a href="/details/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a> |
+            👁️‍🗨️ Visited: <%= item.visited %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
 
-  <div id="results" class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto"></div>
-
-  <a href="/" class="mt-10 inline-block text-blue-500 hover:underline">← 回首頁</a>
-
-  <script>
-    async function loadStats() {
-      try {
-        const res = await fetch('/api/v1/stats');
-        const data = await res.json();
-
-        // Version and stats
-        const meta = document.getElementById('meta');
-        meta.innerHTML = `
-          <p>🔧 使用資料庫版本：<strong>${data.version}</strong></p>
-          <p>📄 全部文件數：<strong>${data.documents}</strong></p>
-          <p>🎯 搜尋命中數：<strong>${data.matched}</strong></p>
-        `;
-
-        // Results
-        const container = document.getElementById('results');
-        container.innerHTML = '';
-        data.results.forEach(item => {
-          const box = document.createElement('div');
-          box.className = 'bg-white shadow-md rounded p-5 text-left';
-          box.innerHTML = `
-            <p class="text-gray-800 mb-2">💬 ${item.textChi}</p>
-            <p class="text-sm text-gray-500">
-  🆔 <a href="/details/${item.id}" class="text-blue-500 hover:underline">${item.id}</a> |
-  👁️‍🗨️ Visited: ${item.visited}
-</p>        
-          `;
-          container.appendChild(box);
-        });
-
-      } catch (error) {
-        document.getElementById('meta').textContent = '⚠️ 資料載入失敗。';
-      }
-    }
-
-    loadStats();
-  </script>
+  <a href="/" class="mt-10 text-blue-500 hover:underline">← 回首頁</a>
 </body>
 </html>

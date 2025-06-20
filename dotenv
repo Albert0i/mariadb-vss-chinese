@@ -1,0 +1,8 @@
+
+DATABASE_URL=mysql://user:password@localhost:3306/vss
+
+MODEL_NAME=ggml-model-q4_k.gguf
+
+HOST=localhost
+
+PORT=3000
