@@ -12,7 +12,7 @@ model documents {
   id          Int                         @id @default(autoincrement())
   textChi     String                      @unique(map: "textChi") @db.VarChar(512)
   visited     Int?                        @default(0)
-  embedding   Unsupported("vector(4096)")
+  embedding   Unsupported("vector(1024)")
   createdAt   DateTime?                   @default(now()) @db.Timestamp(0)
   updatedAt   DateTime?                   @db.Timestamp(0)
   updateIdent Int?                        @default(0)
