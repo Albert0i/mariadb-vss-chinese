@@ -26,5 +26,11 @@ app.use('/', router);
 app.use('/api/v1', apiRouter);
 
 // Start server
+const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+
+app.listen(PORT, () => {
+        console.log(`Server running at http://${HOST}:${PORT}`)
+    } ).on('error', (error) => {
+        throw new Error(error.message)
+    } );

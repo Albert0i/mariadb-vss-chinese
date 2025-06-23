@@ -10,7 +10,7 @@
   <h1 class="text-3xl font-semibold text-gray-800 mb-8">語意搜尋</h1>
 
   <form method="POST" action="/search" class="w-full max-w-md space-y-4">
-    <input name="query" value="<%= query %>" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" autofocus required/>
+    <input name="query" value="<%= query %>" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" autofocus required  maxlength="512"/>
     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">提交</button>
   </form>
 

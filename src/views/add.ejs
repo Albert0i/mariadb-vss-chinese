@@ -12,7 +12,7 @@
   <form method="POST" action="/add" class="w-full max-w-md space-y-4"
   onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').classList.add('opacity-50');">
 <input name="textChi" placeholder="輸入新增內容…" autofocus required
-class="w-full border rounded px-4 py-2" />
+class="w-full border rounded px-4 py-2"  maxlength="512"/>
 <button type="submit"
 class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">提交新增</button>
 </form>
