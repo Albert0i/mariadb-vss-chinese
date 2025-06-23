@@ -96,28 +96,28 @@ model documents {
 }
 ```
 
-The template to generate vector embedding is from [here](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md): 
+The code template to generate vector embedding is available [here](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md): 
 ```
 import {fileURLToPath} from "url";
 import path from "path";
-import {getLlama, LlamaEmbedding} from "node-llama-cpp";
+import { getLlama } from 'node-llama-cpp';
 
-const __dirname = path.dirname(
-    fileURLToPath(import.meta.url)
-);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const llama = await getLlama();
 const model = await llama.loadModel({
-    modelPath: path.join(__dirname, "bge-small-en-v1.5-q8_0.gguf")
-});
+    modelPath: path.join(__dirname, "models", "bge-small-en-v1.5-q8_0.gguf"),
+    eosTokenId: 128001 // Adjust based on tokenizer config
+  });
 const context = await model.createEmbeddingContext();
 
-async function embedDocuments(documents: readonly string[]) {
-    const embeddings = new Map<string, LlamaEmbedding>();
+async function embedDocuments(documents) {
+    const embeddings = new Map();
 
     await Promise.all(
         documents.map(async (document) => {
             const embedding = await context.getEmbeddingFor(document);
+            
             embeddings.set(document, embedding);
 
             console.debug(
@@ -129,11 +129,8 @@ async function embedDocuments(documents: readonly string[]) {
     return embeddings;
 }
 
-function findSimilarDocuments(
-    embedding: LlamaEmbedding,
-    documentEmbeddings: Map<string, LlamaEmbedding>
-) {
-    const similarities = new Map<string, number>();
+function findSimilarDocuments(embedding, documentEmbeddings) {
+    const similarities = new Map();
     for (const [otherDocument, otherDocumentEmbedding] of documentEmbeddings)
         similarities.set(
             otherDocument,
@@ -141,24 +138,24 @@ function findSimilarDocuments(
         );
 
     return Array.from(similarities.keys())
-        .sort((a, b) => similarities.get(b)! - similarities.get(a)!);
+        .sort((a, b) => similarities.get(b) - similarities.get(a));
 }
 
 const documentEmbeddings = await embedDocuments([
-    "The sky is clear and blue today",
-    "I love eating pizza with extra cheese",
-    "Dogs love to play fetch with their owners",
-    "The capital of France is Paris",
-    "Drinking water is important for staying hydrated",
-    "Mount Everest is the tallest mountain in the world",
-    "A warm cup of tea is perfect for a cold winter day",
-    "Painting is a form of creative expression",
-    "Not all the things that shine are made of gold",
-    "Cleaning the house is a good way to keep it tidy"
-]);
-
+     "The sky is clear and blue today",
+     "I love eating pizza with extra cheese",
+     "Dogs love to play fetch with their owners",
+     "The capital of France is Paris",
+     "Drinking water is important for staying hydrated",
+     "Mount Everest is the tallest mountain in the world",
+     "A warm cup of tea is perfect for a cold winter day",
+     "Painting is a form of creative expression",
+     "Not all the things that shine are made of gold",
+     "Cleaning the house is a good way to keep it tidy"
+ ]);
 
 const query = "What is the tallest mountain on Earth?";
+
 const queryEmbedding = await context.getEmbeddingFor(query);
 
 const similarDocuments = findSimilarDocuments(
@@ -170,6 +167,14 @@ const topSimilarDocument = similarDocuments[0];
 console.log("query:", query);
 console.log("Document:", topSimilarDocument);
 ```
+
+> This example will produce this output:
+```
+query: What is the tallest mountain on Earth?
+Document: Mount Everest is the tallest mountain in the world
+```
+
+> This example uses [bge-small-en-v1.5](https://huggingface.co/CompendiumLabs/bge-small-en-v1.5-gguf/blob/main/bge-small-en-v1.5-q8_0.gguf)
 
 Which is a good start! 
 
