@@ -259,7 +259,42 @@ SELECT * FROM documents WHERE visited <> 0;
 ![alt search-results](img/search-results.JPG)
 
 
-#### V. Bibliography 
+#### V. Building a web site
+With a little bit web knowledge and the help of AI, one can quickly build a decent web site, in our case about 95% of code is written by HIM, only the implementation of API route is written by myself. We expose six pages: 
+1. http://localhost:3000/
+2. http://localhost:3000/search
+3. http://localhost:3000/add
+4. http://localhost:3000/stats
+5. http://localhost:3000/details
+6. http://localhost:3000/feature
+
+And four API end-points: 
+1. http://localhost:3000/api/v1/search
+2. http://localhost:3000/api/v1/add
+3. http://localhost:3000/api/v1/stats
+4. http://localhost:3000/api/v1/details
+
+Start the server: 
+```
+npm run dev 
+```
+
+![alt welcome](img/welcome.JPG)
+
+
+#### VI. Last suggestion from AI
+For **semantic search in Traditional Chinese**, the current top performer is **BAAI’s bge-m3** model. It consistently ranks at or near the top of multilingual benchmarks like [MTEB](https://huggingface.co/spaces/mteb/leaderboard), and it’s specifically designed for high-quality sentence embeddings across 100+ languages—including zh-Hant (繁體中文).
+
+**🧠 Why bge-m3 stands out**
+
+- **Multilingual strength**: Trained on diverse corpora, including Traditional Chinese
+- **Dense, high-quality embeddings**: Ideal for similarity search, clustering, and reranking
+- **Fast and efficient**: Available in quantized GGUF format for local use
+- **Proven performance**: Outperforms many older models like MiniLM or E5 on Chinese benchmarks
+- You can grab the GGUF version here: [bbvch-ai/bge-m3-GGUF](https://huggingface.co/bbvch-ai/bge-m3-GGUF)
+
+
+#### VII. Bibliography 
 1. [Choosing a Model](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/choosing-a-model.md)
 2. [Using Embedding](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md)
 3. [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries)
@@ -271,4 +306,4 @@ SELECT * FROM documents WHERE visited <> 0;
 > "I am certainly ignorant, but facts are facts, which is very sad for me but also advantageous, since an ignorant man will dare to do more, so I will happily go about in my ignorance with what I am sure are its unfortunate consequences for a little longer, as long as my strength allows. "<br />The Castle by Franz Kafka
 
 
-### EOF (2025/06/20)
+### EOF (2025/06/27)
