@@ -6,7 +6,9 @@ import { getLlama } from 'node-llama-cpp';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const llama = await getLlama();
+//const llama = await getLlama();
+// - Optional: Enable debug logging to confirm the backend version
+const llama = await getLlama({ debug: true });
 const model = await llama.loadModel({
     modelPath: path.join(__dirname, "models", process.env.MODEL_NAME),
     eosTokenId: 128001 // Adjust based on tokenizer config
