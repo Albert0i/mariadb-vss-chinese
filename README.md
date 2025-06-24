@@ -298,6 +298,9 @@ For **semantic search in Traditional Chinese**, the current top performer is **B
 - You can grab the GGUF version here: [bbvch-ai/bge-m3-GGUF](https://huggingface.co/bbvch-ai/bge-m3-GGUF/tree/main)
 
 
+“This article has an [Easter egg](README.2.md)”
+
+
 #### VII. Bibliography 
 1. [Choosing a Model](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/choosing-a-model.md)
 2. [Using Embedding](https://github.com/withcatai/node-llama-cpp/blob/master/docs/guide/embedding.md)

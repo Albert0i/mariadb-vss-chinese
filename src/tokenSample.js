@@ -15,15 +15,12 @@ const text = '我想提前終止租約';
 const tokens = segment(text);
 
 // Check the token structure
-console.log(JSON.stringify(tokens, null, 2));
+//console.log(JSON.stringify(tokens, null, 2));
 
 // Print segmented result
 console.log('Segmented:', tokens.map(t => t.text).join(' '));
 
 // Optional: show pinyin and English
-// tokens.forEach(({ text, pinyin, english }) => {
-//   console.log(`${text} (${pinyin}) → ${english}`);
-// });
 tokens.forEach(({ text, matches }) => {
     const match = matches?.[0];
     const pinyin = match?.pinyin ?? '—';
