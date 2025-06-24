@@ -279,7 +279,11 @@ Start the server:
 npm run dev 
 ```
 
+And navigate to [http://localhost:3000/](http://localhost:3000/): 
+
 ![alt welcome](img/welcome.JPG)
+
+Have fun! 
 
 
 #### VI. Last suggestion from AI
