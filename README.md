@@ -291,7 +291,7 @@ For **semantic search in Traditional Chinese**, the current top performer is **B
 - **Dense, high-quality embeddings**: Ideal for similarity search, clustering, and reranking
 - **Fast and efficient**: Available in quantized GGUF format for local use
 - **Proven performance**: Outperforms many older models like MiniLM or E5 on Chinese benchmarks
-- You can grab the GGUF version here: [bbvch-ai/bge-m3-GGUF](https://huggingface.co/bbvch-ai/bge-m3-GGUF)
+- You can grab the GGUF version here: [bbvch-ai/bge-m3-GGUF](https://huggingface.co/bbvch-ai/bge-m3-GGUF/tree/main)
 
 
 #### VII. Bibliography 
