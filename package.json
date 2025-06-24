@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
+    "chinese-tokenizer": "^2.4.0",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
