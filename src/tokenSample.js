@@ -12,6 +12,7 @@ const segment = tokenizer.loadFile(dictPath);
 
 // Segment Traditional Chinese text
 const text = '我想提前終止租約';
+//const text = '向晚意不適，驅車登古原。夕陽無限好，只是近黃昏。';
 const tokens = segment(text);
 
 // Check the token structure

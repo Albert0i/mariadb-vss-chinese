@@ -8,6 +8,9 @@ import {fileURLToPath} from "url";
 import path from "path";
 import {getLlama} from "node-llama-cpp";
 
+// chinese-tokenizer
+import tokenizer from 'chinese-tokenizer';
+
 // node-llama-cpp 
 const __dirname = path.dirname(
   fileURLToPath(import.meta.url)
@@ -17,6 +20,12 @@ const model = await llama.loadModel({
     modelPath: path.join(__dirname, "..", "src", "models", process.env.MODEL_NAME)
 });
 const context = await model.createEmbeddingContext();
+
+// Resolve dictionary path
+const dictPath = path.join(__dirname, '..', 'src', 'dictionary', 'cedict_ts.u8');
+
+// Load the dictionary and get the tokenizer instance
+const segment = tokenizer.loadFile(dictPath);
 
 // Prisma 
 const prisma = new PrismaClient();
@@ -29,11 +38,12 @@ import { removeWords } from './helper.js'
 */
 export async function addDocument(document) {
     const { vector } = await context.getEmbeddingFor(removeWords(document));
-
+    const tokens = segment(removeWords(document));
     // Add new document
     return await prisma.$executeRaw`
-                    INSERT INTO documents (textChi, embedding) 
-                    VALUES( ${document}, VEC_FromText(${JSON.stringify(vector)}) ) 
+                    INSERT INTO documents (textChi, textChiSeg, embedding) 
+                    VALUES( ${document}, ${tokens.map(t => t.text).join(' ')},
+                    VEC_FromText(${JSON.stringify(vector)}) ) 
                     ON DUPLICATE KEY 
                     UPDATE updateIdent = updateIdent + 1;
               `;
