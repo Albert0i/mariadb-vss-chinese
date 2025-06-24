@@ -150,7 +150,7 @@ export async function addDocument(document) {
 }
 ```
 
-And reseed with `npx prisma db seed`. 
+And re-seed with `npx prisma db seed`. 
 
 
 #### V. my.ini 
