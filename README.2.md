@@ -1,7 +1,7 @@
 ### Fulltext Search in Chinese using MariaDB
 > While vectorization is about model; tokenization is about dictionary. 
 
-To be honest, over 95% of this article is written by HIM. 
+**DISCLAIMER: Over 95% of this article is written by HIM.**
 
 
 #### Prologue 
@@ -303,6 +303,17 @@ You can explore deeper examples and explanations in these tutorials:
 - [How to do full text search in MariaDB – DinoGeek](https://dinogeek.me/EN/MariaDB/How-to-do-full-text-search-in-MariaDB.html)
 - [MariaDB Full Text Search Tutorial – StackBay](https://stackbay.org/modules/chapter/learn-mariadb/full-text-search)
 - [Introduction to Full Text Search in MariaDB – Severalnines](https://severalnines.com/blog/introduction-full-text-search-mariadb/)
+
+Start the server: 
+```
+npm run dev 
+```
+
+And navigate to [http://localhost:3000/ftsearch](http://localhost:3000/ftsearch): 
+
+![alt welcome](img/ftsearch.JPG)
+
+Enjoy! 
 
 
 #### VII. Bibliography 

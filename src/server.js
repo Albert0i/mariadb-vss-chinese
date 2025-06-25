@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import router from './routes/index.js';
 import apiRouter from './routes/api.js';
+import { handle404 } from './middleware/handle404.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 // Use router
 app.use('/', router);
 app.use('/api/v1', apiRouter);
+
+// 404 handler (keep this LAST)
+app.use(handle404);
 
 // Start server
 const HOST = process.env.HOST || 'localhost';

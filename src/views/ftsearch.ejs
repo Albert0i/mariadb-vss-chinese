@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全文搜尋</title>
+  <link rel="stylesheet" href="/css/tailwind.css" />
+</head>
+<body class="bg-white px-4 py-12 flex flex-col items-center min-h-screen">
+  <h1 class="text-3xl font-semibold text-gray-800 mb-8">全文搜尋</h1>
+
+  <form method="POST" action="/ftsearch" class="w-full max-w-md space-y-4">
+    <input name="query" value="<%= query %>" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" autofocus required  maxlength="512"/>
+
+    <div class="space-y-2 text-sm text-gray-700">
+      <div class="flex items-center font-medium text-sm">
+        <span>搜尋模式：</span>
+        <a href="https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/optimization-and-indexes/full-text-indexes/full-text-index-overview" 
+           target="_blank" 
+           class="text-blue-400 hover:text-blue-600 ml-2 inline-flex items-center text-xs align-middle">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+          </svg>
+          MariaDB 說明文件
+        </a>
+      </div>
+      
+      <!-- Natural Language Mode -->
+      <label class="flex items-center space-x-2">
+        <input type="radio" name="mode" id="mode-natural" value="natural" 
+               class="form-radio text-blue-500"
+               <%= mode === 'natural' || !mode ? 'checked' : '' %> />
+        <span>自然語言模式</span>
+    
+        <!-- WITH QUERY EXPANSION checkbox -->
+        <label class="flex items-center space-x-2 ml-4">
+          <input type="checkbox" name="expand" id="expand" class="form-checkbox text-blue-500"
+                 <%= expand ? 'checked' : '' %> />
+          <span class="text-gray-600">含查詢擴展</span>
+        </label>
+      </label>
+    
+      <!-- Boolean Mode -->
+      <label class="flex items-center space-x-2">
+        <input type="radio" name="mode" id="mode-boolean" value="boolean" 
+               class="form-radio text-blue-500"
+               <%= mode === 'boolean' ? 'checked' : '' %> />
+        <span>布林模式</span>
+      </label>
+    </div>
+
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">提交</button>
+  </form>
+
+  <% if (results.length > 0) { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full max-w-6xl mt-10 px-2">
+      <% results.forEach(item => { %>
+        <div class="bg-gray-100 rounded p-4 shadow text-left">
+          <p class="text-gray-800 text-base mb-1">💬 <%= item.textChi %></p>
+          <p class="text-sm text-gray-500">
+            🆔 <a href="/details/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a> |
+            距離: <%= item.distance.toFixed(5) %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+
+  <a href="/" class="mt-10 text-blue-500 hover:underline">← 回首頁</a>
+
+  <script>
+    const naturalRadio = document.getElementById('mode-natural');
+    const booleanRadio = document.getElementById('mode-boolean');
+    const expandCheckbox = document.getElementById('expand');
+
+    function toggleExpand() {
+      expandCheckbox.disabled = !naturalRadio.checked;
+    }
+    
+    // Add event listeners
+    naturalRadio.addEventListener('change', toggleExpand);
+    booleanRadio.addEventListener('change', toggleExpand);
+  </script>  
+
+</body>
+</html>

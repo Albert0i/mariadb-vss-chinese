@@ -107,4 +107,12 @@ router.get('/details', async (req, res) => {
   res.status(200).json(doc);
 });
 
+// POST /api/v1/search
+router.post('/ftsearch', async (req, res) => {
+  const { query } = req.body;
+  const results = await findSimilarDocuments(query, process.env.MAX_FIND)  
+
+  res.status(200).json(results)
+});
+
 export default router;

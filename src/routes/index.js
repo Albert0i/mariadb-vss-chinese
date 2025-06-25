@@ -73,4 +73,24 @@ router.get('/feature', (req, res) => {
   res.redirect('/mariadb-vss-chinese.pdf');
 });
 
+// Fulltext Search page - GET (initial form)
+router.get('/ftsearch', (req, res) => {
+  res.render('ftsearch', { query: '', mode: 'natural', expand: '', results: [] } );
+});
+
+// Fulltext Search page - POST (handle query & render results)
+router.post('/ftsearch', async (req, res) => {
+  const { query, mode, expand } = req.body;
+  console.log('query =', query, ", mode =", mode, ', expand = ', expand)
+  const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/ftsearch`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query })
+  });
+  //const results = await response.json();
+  const results = [];
+
+  res.render('ftsearch', { query, mode, expand, results } );
+});
+
 export default router;

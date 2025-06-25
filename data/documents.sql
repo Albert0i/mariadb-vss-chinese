@@ -7,6 +7,7 @@ CREATE TABLE documents (
   id          INT AUTO_INCREMENT PRIMARY KEY,
 
   textChi     VARCHAR(512) NOT NULL, 
+  textChiSeg  VARCHAR(512) NOT NULL,  
   visited     INT DEFAULT 0, 
   embedding   VECTOR(4096) NOT NULL,  
   
@@ -14,8 +15,9 @@ CREATE TABLE documents (
   updatedAt   TIMESTAMP, 
   updateIdent INT DEFAULT 0, 
     
-  UNIQUE (textChi),
-  VECTOR INDEX (embedding) M=16 DISTANCE=cosine
+  CONSTRAINT unique_textChi UNIQUE (textChi),
+  FULLTEXT INDEX ft_textChiSeg (textChiSeg), 
+  VECTOR INDEX vss_textCh (embedding) M=16 DISTANCE=cosine
 );
 
 --
