@@ -299,6 +299,7 @@ This lets you rank results by how well they match the query.
 - Combine with `LIKE` or `REGEXP` for hybrid strategies
 
 6. Other issues in Chinese query
+
 You can query with: 
 ```
 SELECT * FROM documents
