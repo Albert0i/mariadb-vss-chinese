@@ -298,7 +298,36 @@ This lets you rank results by how well they match the query.
 - Use `WITH QUERY EXPANSION` for exploratory search
 - Combine with `LIKE` or `REGEXP` for hybrid strategies
 
-6. Want More?
+6. Other issues in Chinese query
+You can query with: 
+```
+SELECT * FROM documents
+WHERE MATCH(textChiSeg) AGAINST('太陽');
+```
+
+But not: 
+```
+SELECT * FROM documents
+WHERE MATCH(textChiSeg) AGAINST('太');
+
+SELECT * FROM documents
+WHERE MATCH(textChiSeg) AGAINST('陽');
+```
+
+You can query with: 
+```
+SELECT * FROM documents
+WHERE MATCH(textChiSeg) AGAINST('太*'  IN BOOLEAN MODE);
+```
+
+But not: 
+```
+SELECT * FROM documents
+WHERE MATCH(textChiSeg) AGAINST('*陽'  IN BOOLEAN MODE);
+```
+> The wildcard, indicating zero or more characters. It can only appear at the end of a word.
+
+7. Want More?
 You can explore deeper examples and explanations in these tutorials:
 - [How to do full text search in MariaDB – DinoGeek](https://dinogeek.me/EN/MariaDB/How-to-do-full-text-search-in-MariaDB.html)
 - [MariaDB Full Text Search Tutorial – StackBay](https://stackbay.org/modules/chapter/learn-mariadb/full-text-search)
@@ -322,6 +351,9 @@ Enjoy!
 3. [Full-Text Index Overview](https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/optimization-and-indexes/full-text-indexes/full-text-index-overview)
 4. [Server System Variables](https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/system-variables/server-system-variables#ft_min_word_len)
 5. [Configuring MariaDB with Option Files](https://mariadb.com/docs/server/server-management/install-and-upgrade-mariadb/configuring-mariadb/configuring-mariadb-with-option-files)
+6. [Full-text search](https://www.prisma.io/docs/orm/prisma-client/queries/full-text-search)
+7. [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries)
+8. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
 
 #### Epilogue
