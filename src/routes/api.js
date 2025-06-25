@@ -109,10 +109,77 @@ router.get('/details', async (req, res) => {
 
 // POST /api/v1/search
 router.post('/ftsearch', async (req, res) => {
-  const { query } = req.body;
-  const results = await findSimilarDocuments(query, process.env.MAX_FIND)  
-
+  const { query, mode, expand } = req.body;
+  const results = await findDocuments(query, mode, expand, process.env.MAX_FIND)
+  
   res.status(200).json(results)
 });
 
+/*
+    AI: 
+    Why use $queryRawUnsafe?
+    Because WITH QUERY EXPANSION isn't compatible with Prisma’s standard query builder, 
+    and you're injecting raw SQL features. Be sure to properly sanitize any dynamic input 
+    if you interpolate it—although using placeholders like ? here is already good practice.
+*/
+async function findDocuments(query, mode, expand, limit = 5) {
+    // Find documents 
+    const sqlStmt = ` SELECT textChi,
+                             MATCH(textChiSeg) AGAINST (? 
+                                   ${ mode==='boolean' ? 'IN BOOLEAN MODE': '' }
+                                   ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } ) AS distance,
+                             id
+                      FROM documents
+                      HAVING distance > 0
+                      ORDER BY distance DESC
+                      LIMIT ${limit} OFFSET 0
+                    `
+    const docs = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
+
+    // Update `visited` field                                    
+    const promises = [];    // Collect promises 
+    docs.forEach(doc => { 
+            promises.push(prisma.$executeRaw`
+                            UPDATE documents 
+                            SET visited = visited + 1, 
+                                updatedAt = Now(), 
+                                updateIdent = updateIdent + 1
+                            WHERE id=${doc.id}
+                          `
+              )
+        })
+    await Promise.all(promises); // Resolve all at once
+
+    return docs 
+}
+
 export default router;
+
+/*
+-- Natural mode 
+SELECT textChi, 
+		 MATCH(textChiSeg) AGAINST('太陽' ) AS distance, 
+		 id 
+FROM documents
+HAVING distance > 0
+ORDER BY distance DESC
+LIMIT 10 OFFSET 0 
+
+-- Natural mode with query expansion
+SELECT textChi, 
+		 MATCH(textChiSeg) AGAINST('太陽' WITH QUERY EXPANSION) AS distance, 
+		 id 
+FROM documents
+HAVING distance > 0
+ORDER BY distance DESC
+LIMIT 10 OFFSET 0 
+
+-- Boolean mode 
+SELECT textChi, 
+		 MATCH(textChiSeg) AGAINST('+太陽 +東' IN BOOLEAN MODE) AS distance, 
+		 id 
+FROM documents
+HAVING distance > 0
+ORDER BY distance DESC
+LIMIT 10 OFFSET 0 
+*/

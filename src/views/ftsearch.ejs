@@ -64,6 +64,11 @@
         </div>
       <% }); %>
     </div>
+    <% } else if (query !== '') { %>
+      <div class="mt-10 text-center text-gray-600">
+        <p class="text-lg mb-2">🔍 沒有找到符合「<%= query %>」的結果。</p>
+        <p class="text-md text-red-600">試著換個關鍵字，或簡化搜尋詞再試一次。</p>
+      </div>    
   <% } %>
 
   <a href="/" class="mt-10 text-blue-500 hover:underline">← 回首頁</a>
