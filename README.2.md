@@ -247,7 +247,7 @@ plugin-dir=C:\Program Files\MariaDB 11.7/lib/plugin
 ```
 
 
-#### VI. Fulltext examples 
+#### VI. Fulltext search examples 
 > FULLTEXT indexes are supported on `CHAR`, `VARCHAR`, and `TEXT` columns in **InnoDB** and **MyISAM**.
 
 > This works because you've already segmented the Chinese text into searchable tokens.
