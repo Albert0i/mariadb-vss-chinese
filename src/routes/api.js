@@ -173,7 +173,7 @@ async function countDocuments(query, mode, expand) {
                                  ${ mode==='boolean' ? 'IN BOOLEAN MODE': '' }
                                  ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } )
                   `
-  // [ { count: 3n }]
+  // [ { count: 3n } ]
   const [ { count } ] = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
 
   return count.toString() 
