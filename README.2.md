@@ -39,7 +39,7 @@ Example:
 If you’re already exploring vector search (like with MariaDB VSS), you can skip tokenization entirely and use **embedding-based search**. This works beautifully for Chinese—including Traditional Chinese—and gives better relevance for meaning, not just keywords.
 
 
-#### II. Fulltext search issue
+#### II. Implementing Fulltext search
 For **Traditional Chinese word segmentation** in Node.js, the best tool depends on your priorities—accuracy, speed, or ease of setup. Here's a quick rundown of the top contenders:
 
 1. **Best Overall for Traditional Chinese: [`chinese-tokenizer`](https://github.com/yishn/chinese-tokenizer)**
