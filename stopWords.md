@@ -29,3 +29,6 @@ That said, here are some commonly used sources and examples:
 - **Avoid over-filtering**: In Chinese, even short words can carry meaning, so test carefully before excluding.
 
 Would you like me to help you integrate a stop word list into your tokenizer or MariaDB fulltext pipeline? I can also help you visualize how filtering affects your search results.
+
+---
+[Codex: The Impact of English on Programming Languages - Guy Royse - NDC London 2025](https://youtu.be/wwwSFFhxJ3U)
