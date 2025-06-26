@@ -1,7 +1,7 @@
 ### Fulltext Search in Chinese using MariaDB
 > While vectorization is about model; tokenization is about dictionary. 
 
-**DISCLAIMER: Over 95% of this article is written by HIM, i mean the AI**
+**DISCLAIMER: Over 95% of this article is written by HIM, i mean AI**
 
 
 #### Prologue 
