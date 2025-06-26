@@ -10,7 +10,7 @@
   <h1 class="text-3xl font-semibold text-gray-800 mb-8">全文搜尋</h1>
 
   <form method="POST" action="/ftsearch" class="w-full max-w-md space-y-4">
-    <input name="query" value="<%= query %>" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" autofocus required  maxlength="512"/>
+    <input name="query" id="query" value="<%= query %>" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" autofocus required  maxlength="512"/>
 
     <div class="space-y-2 text-sm text-gray-700">
       <div class="flex items-center font-medium text-sm">
@@ -49,6 +49,7 @@
       </label>
     </div>
 
+    <div id="result-hint" class="text-sm text-gray-800 mt-2"></div>
     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">提交</button>
   </form>
 
@@ -86,6 +87,42 @@
     naturalRadio.addEventListener('change', toggleExpand);
     booleanRadio.addEventListener('change', toggleExpand);
   </script>  
+
+  <script>
+    const query = document.getElementById('queryInput');
+    // const modeInputs = document.querySelectorAll('input[name="mode"]');
+    // const expandCheckbox = document.querySelector('input[name="expand"]');
+    const hintDiv = document.getElementById('result-hint');
+    console.log(query)
+    let timeoutId;
+
+    query.addEventListener('input', () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const queryInput = query.value.trim();
+        if (!queryInput) {
+          hintDiv.textContent = '';
+          return;
+        }
+
+        // const mode = [...modeInputs].find(r => r.checked)?.value || 'natural';
+        // const expand = expandCheckbox?.checked || false;
+
+        fetch(`/api/v1/ftcheck?query=${encodeURIComponent(query)}&mode=${mode}&expand=${expand}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              hintDiv.textContent = `🌱 預估有 ${data.count} 筆可能的相符結果。`;
+            } else {
+              hintDiv.textContent = `🚫 查詢失敗，請稍後再試。`;
+            }
+          })
+          .catch(err => {
+            hintDiv.textContent = `⚠️ 無法連線至伺服器。`;
+          });
+      }, 1000); // debounce delay
+    });
+  </script>
 
 </body>
 </html>

@@ -4,6 +4,7 @@ export function handle404(req, res, next) {
       url: req.originalUrl,
       title: '找不到頁面',
       subTitle: '哎呀……這個頁面不存在',
-      description: '輕輕的踏進迷霧，訪尋的頁面不見芳蹤。也許是緣慳一面，也許只是一場春夢。'
+      // description: '看起來你可能走錯路了。這個頁面可能已被移動、刪除，或者從未存在過。'
+      description: '踏進迷霧，難覓伊人芳蹤。也許是緣慳一面，也許不過是一場春夢。'
     });
   }  
