@@ -5,7 +5,7 @@
 
 
 #### Prologue 
-Computer was not invented by Chinese people and many crucial software neither. Working with chinese data in real life poses issues of this and that. Some of them pertaining to input and display; others related to data retrieval. In RDBMS, the search of Chinese data heavily depends on pattern matching technique with `LIKE` and `%`. [Full-text search](https://en.wikipedia.org/wiki/Full-text_search) empowers developers with more advanced search capability but lacks support for chinese languages. 
+Computer was not invented by Chinese people and many crucial software neither. Working with chinese data in real life poses issues of this and that. Some of them pertaining to input and display; others related to data retrieval. In RDBMS, the search of Chinese data heavily depends on pattern matching technique with `LIKE` and `%`. [Full-text search](https://en.wikipedia.org/wiki/Full-text_search) empowers developers with more advanced search capability but lacks support for chinese languages. While [Semantic Search](https://en.wikipedia.org/wiki/Semantic_search) is powerful but expensive in terms of computing power, vectorization is a time-consuming process, change of model involves re-generate vectors and re-indexing. While Semantic Search is said to be on the threshold to AI but from the view point of data retrieval, using Fulltext search seems to be more cost-effective. 
 
 Chinese text presents a unique challenge for fulltext search: no spaces, dense meaning, and complex character structure. But with proper preprocessing—segmentation, tuning token length, and a few MariaDB tricks—you can enable fast, meaningful search even in Traditional Chinese. This guide walks you through how to make it work, from setup to query.
 
