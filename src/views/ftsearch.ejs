@@ -75,6 +75,9 @@
   <a href="/" class="mt-10 text-blue-500 hover:underline">← 回首頁</a>
 
   <script>
+    /* 
+       Part I: Handle liaison between radio button and checkbox. 
+    */
     const naturalRadio = document.getElementById('mode-natural');
     const booleanRadio = document.getElementById('mode-boolean');
     const expandCheckbox = document.getElementById('expand');
@@ -89,26 +92,31 @@
   </script>  
 
   <script>
-    const query = document.getElementById('queryInput');
-    // const modeInputs = document.querySelectorAll('input[name="mode"]');
-    // const expandCheckbox = document.querySelector('input[name="expand"]');
-    const hintDiv = document.getElementById('result-hint');
-    console.log(query)
+    /* 
+       Part II: Handle async call to backend API when query value change.
+    */
+    const query = document.getElementById('query');
+    const mode = document.querySelector('input[name="mode"]:checked')?.value;
+    const expand = expandCheckbox.checked ? 'on':undefined;
+   
     let timeoutId;
 
     query.addEventListener('input', () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        const queryInput = query.value.trim();
-        if (!queryInput) {
+        const queryValue = query.value.trim();
+        if (!queryValue) {
           hintDiv.textContent = '';
           return;
-        }
+        }                
+        checkFT(query, mode, expand)
+      }, 1000); // debounce delay
+    });
 
-        // const mode = [...modeInputs].find(r => r.checked)?.value || 'natural';
-        // const expand = expandCheckbox?.checked || false;
+    async function checkFT(query, mode, expand) {
+      const hintDiv = document.getElementById('result-hint');
 
-        fetch(`/api/v1/ftcheck?query=${encodeURIComponent(query)}&mode=${mode}&expand=${expand}`)
+      fetch(`/api/v1/ftcheck?query=${encodeURIComponent(query.value)}&mode=${mode}&expand=${expand}`)
           .then(res => res.json())
           .then(data => {
             if (data.success) {
@@ -120,8 +128,7 @@
           .catch(err => {
             hintDiv.textContent = `⚠️ 無法連線至伺服器。`;
           });
-      }, 1000); // debounce delay
-    });
+    }
   </script>
 
 </body>

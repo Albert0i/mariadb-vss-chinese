@@ -1,7 +1,8 @@
 import 'dotenv/config'
 import express from 'express';
-const router = express.Router();
 import { findSimilarDocuments, addDocument } from '../embedder.js';
+
+const router = express.Router();
 
 // Prisma 
 import { PrismaClient } from '../generated/prisma/index.js'; 
@@ -107,12 +108,23 @@ router.get('/details', async (req, res) => {
   res.status(200).json(doc);
 });
 
-// POST /api/v1/search
+/*
+   Fulltext Search Support
+*/
+// POST /api/v1/ftsearch
 router.post('/ftsearch', async (req, res) => {
   const { query, mode, expand } = req.body;
   const results = await findDocuments(query, mode, expand, process.env.MAX_FIND)
   
   res.status(200).json(results)
+});
+
+// GET /api/v1/ftcheck
+router.get('/ftcheck', async (req, res) => {  
+  const { query, mode, expand } = req.query   
+  const count = await countDocuments(query, mode, expand)
+
+  res.status(200).json({ success: true, count })
 });
 
 /*
@@ -151,6 +163,20 @@ async function findDocuments(query, mode, expand, limit = 5) {
     await Promise.all(promises); // Resolve all at once
 
     return docs 
+}
+
+async function countDocuments(query, mode, expand) {
+  // Count documents 
+  const sqlStmt = ` SELECT count(*) AS count
+                    FROM documents
+                    WHERE MATCH(textChiSeg) AGAINST (? 
+                                 ${ mode==='boolean' ? 'IN BOOLEAN MODE': '' }
+                                 ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } )
+                  `
+  // [ { count: 3n }]
+  const [ { count } ] = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
+
+  return count.toString() 
 }
 
 export default router;
