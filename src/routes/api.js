@@ -121,7 +121,7 @@ router.post('/ftsearch', async (req, res) => {
 
 // GET /api/v1/ftcheck
 router.get('/ftcheck', async (req, res) => {  
-  const { query, mode, expand } = req.query   
+  const { query, mode, expand } = req.query
   const count = await countDocuments(query, mode, expand)
 
   res.status(200).json({ success: true, count })

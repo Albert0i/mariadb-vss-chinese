@@ -96,8 +96,9 @@
        Part II: Handle async call to backend API when query value change.
     */
     const query = document.getElementById('query');
-    const mode = document.querySelector('input[name="mode"]:checked')?.value;
-    const expand = expandCheckbox.checked ? 'on':undefined;
+    // const mode = document.querySelector('input[name="mode"]:checked')?.value;
+    // const expand = expandCheckbox.checked ? 'on':undefined;
+    const hintDiv = document.getElementById('result-hint');
    
     let timeoutId;
 
@@ -109,12 +110,13 @@
           hintDiv.textContent = '';
           return;
         }                
-        checkFT(query, mode, expand)
+        checkFT(query)
       }, 1000); // debounce delay
     });
 
-    async function checkFT(query, mode, expand) {
-      const hintDiv = document.getElementById('result-hint');
+    async function checkFT(query) {
+      const mode = document.querySelector('input[name="mode"]:checked')?.value;
+      const expand = expandCheckbox.checked ? 'on':undefined;
 
       fetch(`/api/v1/ftcheck?query=${encodeURIComponent(query.value)}&mode=${mode}&expand=${expand}`)
           .then(res => res.json())
