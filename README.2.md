@@ -1,7 +1,7 @@
 ### Fulltext Search in Chinese using MariaDB
 > While vectorization is about model; tokenization is about dictionary. 
 
-**DISCLAIMER: Over 95% of this article is written by HIM, i mean AI**
+**DISCLAIMER: Over 90% of this article is written by HIM, i mean AI**
 
 
 #### Prologue 
@@ -361,7 +361,9 @@ Enjoy!
 
 
 #### Epilogue
-With segmentation in place and indexes finely tuned, your system can now perform fulltext search in Chinese with speed and precision. Whether scaling to millions of rows or pairing with semantic vectors, you're treating Chinese like a first-class search language. Every token matters now—字字珠璣.
+Fulltext Search is an underrated feature in modern RDBMS. With proper tokenization policy, ie. by dictionary or custom business logic, one can add Fulltext Search capability to Chinese data with minimal effort and acts just like first-class language. 
+
+Fulltext Search, not like its competitor Vector Search, is supported by most of the mainstream databases. Tokenization process is fast and easy to understand. Every token matters now... 
 
 
 ### EOF (2025/06/27)
