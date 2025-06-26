@@ -10,7 +10,7 @@ Computer was not invented by Chinese people and many crucial software neither. W
 Chinese text presents a unique challenge for fulltext search: no spaces, dense meaning, and complex character structure. But with proper preprocessing—segmentation, tuning token length, and a few MariaDB tricks—you can enable fast, meaningful search even in Traditional Chinese. This guide walks you through how to make it work, from setup to query.
 
 
-#### I. Fulltext search issue 
+#### I. Preliminary Study
 MariaDB’s built-in **FULLTEXT search** (like MySQL’s) relies on **word tokenization**—but Chinese doesn’t use spaces between words. So the engine can’t tell where one word ends and another begins.
 
 As a result:
@@ -39,7 +39,7 @@ Example:
 If you’re already exploring vector search (like with MariaDB VSS), you can skip tokenization entirely and use **embedding-based search**. This works beautifully for Chinese—including Traditional Chinese—and gives better relevance for meaning, not just keywords.
 
 
-#### II. Fulltext search issue (cont.)
+#### II. Fulltext search issue
 For **Traditional Chinese word segmentation** in Node.js, the best tool depends on your priorities—accuracy, speed, or ease of setup. Here's a quick rundown of the top contenders:
 
 1. **Best Overall for Traditional Chinese: [`chinese-tokenizer`](https://github.com/yishn/chinese-tokenizer)**
