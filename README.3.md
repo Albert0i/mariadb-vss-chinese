@@ -10,7 +10,49 @@ Oracle supports [Vector Search](https://www.oracle.com/database/ai-vector-search
 Full-text search lets you find relevant words or phrases buried deep in large text columns faster and more flexibly than using plain `LIKE` queries. With Oracle Text, you can build a smart search engine right inside your database. Let’s start from scratch!
 
 
-#### I. Create a Table
+#### I. [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) (TL;DR)
+That works with Chinese because Oracle Text’s `CONTEXT` index type is **multilingual-aware** and supports Chinese out of the box—thanks to its built-in lexers designed for East Asian languages.
+
+By default, Oracle uses the **`CHINESE_VGRAM_LEXER`** or **`CHINESE_LEXER`** when it detects Chinese-language content, especially if your database character set is UTF-8 and the NLS_LANGUAGE is set appropriately. These lexers tokenize Chinese text using overlapping character sequences (like bigrams), which allows Oracle to index and search Chinese phrases even without spaces between words.
+
+So even with a minimal index creation like:
+
+```sql
+CREATE INDEX ft_textChiSeg ON albertoi.documents(textChiSeg)
+  INDEXTYPE IS CTXSYS.CONTEXT;
+```
+
+… it can still tokenize and index Chinese content effectively, unless you override the lexer or stoplist. 
+
+If you want even better control (like using your own segmentation or stop words), you can define a custom lexer and attach it via the `PARAMETERS` clause. 
+
+If you don’t tokenize `textChiSeg`meaning the text remains as raw, unsegmented Chinese like `"星星月亮太陽", Oracle Text will still try to index it, but the results may be **less accurate or useful**, depending on the lexer in use.
+
+
+If you create a `CONTEXT` index without specifying a lexer, Oracle may default to:
+- **`CHINESE_VGRAM_LEXER`**: breaks text into overlapping bigrams (e.g., `"月亮太陽"` → `"月亮"`, `"亮太"`, `"太陽"`).
+- **`CHINESE_LEXER`**: uses dictionary-based segmentation (less common unless explicitly set).
+
+So even without spaces, Oracle can still index and search Chinese—but:
+
+- **You lose control** over how words are segmented.
+- **Ambiguity increases**, especially with compound words or idioms.
+- **Search precision drops**, especially for exact phrase matching.
+
+
+If you’ve already segmented the text using a tool like Jieba or CKIP, you can:
+- Improve search accuracy
+- Enable better scoring and ranking
+- Avoid Oracle’s default segmentation quirks
+
+| Without Tokenization | With Tokenization |
+|----------------------|-------------------|
+| Oracle uses bigrams or built-in lexer | You control segmentation |
+| Works, but less precise | More accurate search |
+| No need for custom lexer | Use `BASIC_LEXER` with `whitespace=YES` |
+
+
+#### II. Create a Table
 Suppose you’re storing Chinese text and its segmented version (tokens separated by spaces) in a table like so:
 
 ```
@@ -23,7 +65,7 @@ CREATE TABLE documents (
 Where `textChi` contains '今天的天空晴朗且蔚藍'; `textChiSeg` contains '今天 天空 晴朗 且 蔚藍', for example. 
 
 
-#### II. Create a Lexer Preference
+#### III. Create a Lexer Preference (Optional)
 By default, [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) uses a lexer to tokenize input during indexing. If your data is already segmented (e.g., "星星 月亮 太陽"), you can tell Oracle to treat spaces as token boundaries by using the **BASIC_LEXER** with `printjoins=NO` and `whitespace=YES`. 
 ```
 BEGIN
@@ -71,7 +113,7 @@ END;
 ```
 
 
-#### III. Create a Full-Text Index
+#### IV. Create a Full-Text Index
 Then create your index like this: 
 ```
 CREATE INDEX ft_textChiSeg ON documents(textChiSeg)
@@ -106,7 +148,7 @@ DRG-10599: column is not indexed
 ```
 
 
-#### IV. Query examples 
+#### V. Query examples 
 In Oracle full-text search, the correct function to use is **`CONTAINS`**, not `MATCH`. As for `MATCH`, that’s not an Oracle SQL keyword, it’s used in other databases like `MySQL` or `PostgreSQL` for full-text search, but **Oracle does not support** `MATCH`.
 
 The `CONTAINS` function is part of **Oracle Text**, and it allows you to search for keywords, phrases, and complex expressions within text columns that have been indexed with a `CONTEXT` index. Here's a basic example:
@@ -114,6 +156,9 @@ The `CONTAINS` function is part of **Oracle Text**, and it allows you to search 
 ```
 SELECT * FROM documents
 WHERE CONTAINS(textChiSeg, '太陽 AND 月亮') > 0;
+
+SELECT * FROM albertoi.documents 
+WHERE CONTAINS(TEXTCHISEG, '東西 AND 黃金' ) > 0;  
 ```
 
 This returns rows where the `textChiSeg` column contains both "太陽" and "月亮". `MATCH` is used in other databases like MySQL or PostgreSQL (with full-text extensions), but **not in Oracle**. 
@@ -182,7 +227,7 @@ EXEC CTX_DDL.SYNC_INDEX('FT_TEXTCHISEG');
 ```
 
 
-#### V. Wrap-Up
+#### VI. Wrap-Up
 - Use `CONTAINS()` for powerful text queries
 - Tokenize Chinese text into `textChiSeg` with spaces
 - Create a `BASIC_LEXER` that respects your token boundaries
@@ -190,11 +235,11 @@ EXEC CTX_DDL.SYNC_INDEX('FT_TEXTCHISEG');
 - Sync the index when your data changes
 
 
-#### VI. Bibliography
+#### VII. Bibliography
 1. [Oracle Text Application Developer's Guide | Indexing with Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/indexing-with-oracle-text.html#GUID-F6B60A4A-B256-415A-9C54-C67C612BFA9B)
 2. [Oracle Text Application Developer's Guide | Querying with Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/querying-with-oracle-text.html#GUID-7310390A-4E76-45D3-99E8-070692043E6B)
 3. [Oracle Text Reference](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccref/)
-4. []()
+4. [Getting Started with AI Vector Search](https://livelabs.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=4166)
 5. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
 
@@ -202,65 +247,3 @@ EXEC CTX_DDL.SYNC_INDEX('FT_TEXTCHISEG');
 
 
 ### EOF (2025/06/30)
-
-
-That works with Chinese because Oracle Text’s `CONTEXT` index type is **multilingual-aware** and supports Chinese out of the box—thanks to its built-in lexers designed for East Asian languages.
-
-By default, Oracle uses the **`CHINESE_VGRAM_LEXER`** or **`CHINESE_LEXER`** when it detects Chinese-language content, especially if your database character set is UTF-8 and the NLS_LANGUAGE is set appropriately. These lexers tokenize Chinese text using overlapping character sequences (like bigrams), which allows Oracle to index and search Chinese phrases even without spaces between words.
-
-So even with a minimal index creation like:
-
-```sql
-CREATE INDEX ft_textChiSeg ON albertoi.documents(textChiSeg)
-  INDEXTYPE IS CTXSYS.CONTEXT;
-```
-
-…it can still tokenize and index Chinese content effectively—unless you override the lexer or stoplist.
-
-If you want even better control (like using your own segmentation or stop words), you can define a custom lexer and attach it via the `PARAMETERS` clause. Want help tuning it for Traditional Chinese or testing how it tokenizes your data?
-
-
-
-
-If you don’t tokenize `textChiSeg`—meaning the text remains as raw, unsegmented Chinese like `"太陽月亮星星"`—Oracle Text will still try to index it, but the results may be **less accurate or useful**, depending on the lexer in use.
-
----
-
-### 🔍 What Happens Without Tokenization
-
-If you create a `CONTEXT` index without specifying a lexer, Oracle may default to:
-- **`CHINESE_VGRAM_LEXER`**: breaks text into overlapping bigrams (e.g., `"太陽月亮"` → `"太陽"`, `"陽月"`, `"月亮"`).
-- **`CHINESE_LEXER`**: uses dictionary-based segmentation (less common unless explicitly set).
-
-So even without spaces, Oracle can still index and search Chinese—but:
-
-- **You lose control** over how words are segmented.
-- **Ambiguity increases**, especially with compound words or idioms.
-- **Search precision drops**, especially for exact phrase matching.
-
----
-
-### 🧠 Why You Might Still Tokenize
-
-If you’ve already segmented the text using a tool like Jieba or CKIP, you can:
-- Improve search accuracy
-- Enable better scoring and ranking
-- Avoid Oracle’s default segmentation quirks
-
----
-
-### TL;DR
-
-| Without Tokenization | With Tokenization |
-|----------------------|-------------------|
-| Oracle uses bigrams or built-in lexer | You control segmentation |
-| Works, but less precise | More accurate search |
-| No need for custom lexer | Use `BASIC_LEXER` with `whitespace=YES` |
-
----
-
-If you want, I can help you test both approaches side by side and compare how `CONTAINS()` behaves. Curious to see how your current data is being tokenized under the hood?
-
-
-
-
