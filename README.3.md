@@ -40,7 +40,7 @@ So even without spaces, Oracle can still index and search Chinese—but:
 - **Search precision drops**, especially for exact phrase matching.
 
 
-If you’ve already segmented the text using a tool like Jieba or CKIP, you can:
+If you’ve already segmented the text using a tool like [Jieba](https://pypi.org/project/jieba/) or [CKIP](https://ckip.iis.sinica.edu.tw/), you can:
 - Improve search accuracy
 - Enable better scoring and ranking
 - Avoid Oracle’s default segmentation quirks
