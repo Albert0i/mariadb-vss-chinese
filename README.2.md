@@ -5,13 +5,13 @@
 
 
 #### Prologue 
-Computer was not invented by Chinese people and many crucial software neither. Working with chinese data in real life poses issues of this and that. Some of them pertaining to input and display; others related to data retrieval. In RDBMS, the search of Chinese data heavily depends on pattern matching technique with `LIKE` and `%`. [Full-text search](https://en.wikipedia.org/wiki/Full-text_search) empowers developers with more advanced search capability but lacks support for chinese languages. While [Semantic Search](https://en.wikipedia.org/wiki/Semantic_search) is powerful but expensive in terms of computing power, vectorization is a time-consuming process, change of model involves re-generate vectors and re-indexing. While using Semantic Search is said to be on the threshold to AI, from the practical view of data retrieval, using Fulltext search seems to be a method more cost-effective. 
+Computer was not invented by Chinese people and many crucial software neither. Working with Chinese data in real life poses issues of this and that. Some of them pertaining to input and display; others related to data retrieval. In RDBMS, the search of Chinese data heavily depends on pattern matching technique with `LIKE` and `%`. [Full-text search](https://en.wikipedia.org/wiki/Full-text_search) empowers developers with more advanced search capability but lacks support for Chinese languages. While [Semantic Search](https://en.wikipedia.org/wiki/Semantic_search) is powerful but expensive in terms of computing power, vectorization is a time-consuming process, change of model involves re-generate vectors and re-indexing. While using Semantic Search is said to be on the threshold to AI, from the practical view of data retrieval, using Fulltext Search seems to be a method more cost-effective. 
 
-Chinese text presents a unique challenge for fulltext search: no spaces, dense meaning, and complex character structure. But with proper preprocessing—segmentation, tuning token length, and a few MariaDB tricks—you can enable fast, meaningful search even in Traditional Chinese. This guide walks you through how to make it work, from setup to query.
+Chinese text presents a unique challenge for fulltext Search: no spaces, dense meaning, and complex character structure. But with proper preprocessing—segmentation, tuning token length, and a few MariaDB tricks—you can enable fast, meaningful search even in Traditional Chinese. This guide walks you through how to make it work, from setup to query.
 
 
 #### I. Preliminary Study
-MariaDB’s built-in **FULLTEXT search** (like MySQL’s) relies on **word tokenization**—but Chinese doesn’t use spaces between words. So the engine can’t tell where one word ends and another begins.
+MariaDB’s built-in **FULLTEXT Search** (like MySQL’s) relies on **word tokenization**—but Chinese doesn’t use spaces between words. So the engine can’t tell where one word ends and another begins.
 
 As a result:
 - It may treat the entire sentence as one “word”
@@ -39,7 +39,7 @@ Example:
 If you’re already exploring vector search (like with MariaDB VSS), you can skip tokenization entirely and use **embedding-based search**. This works beautifully for Chinese—including Traditional Chinese—and gives better relevance for meaning, not just keywords.
 
 
-#### II. Implementing Fulltext search
+#### II. Implementing Fulltext Search
 For **Traditional Chinese word segmentation** in Node.js, the best tool depends on your priorities—accuracy, speed, or ease of setup. Here's a quick rundown of the top contenders:
 
 1. **Best Overall for Traditional Chinese: [`chinese-tokenizer`](https://github.com/yishn/chinese-tokenizer)**
@@ -109,11 +109,11 @@ tokens.forEach(({ text, matches }) => {
 
 ![alt tokenSample](img/tokenSample.JPG)
 
-Our last job is to write the tokenizied chinese data into database, build our fulltext index and querying the data. 
+Our last job is to write the tokenizied Chinese data into database, build our fulltext index and querying the data. 
 
 
 #### IV. Re-seeding
-Let roll up our sleeves and modify the `documents` table. First, by adapting to `bge-m3-q4_k_m.gguf` model for vector embeddings, then add new field  `textChiSeg` for segmented chinese text. 
+Let roll up our sleeves and modify the `documents` table. First, by adapting to `bge-m3-q4_k_m.gguf` model for vector embeddings, then add new field  `textChiSeg` for segmented Chinese text. 
 
 ```
 USE vss;
@@ -156,7 +156,7 @@ And re-seed with `npx prisma db seed`.
 
 
 #### V. my.ini 
-If FULLTEXT search still isn't working, here are the most common culprits to check:
+If FULLTEXT Search still isn't working, here are the most common culprits to check:
 
 1. **Storage Engine**
 Make sure your table is using a FULLTEXT-compatible engine like **InnoDB** or **Mroonga**. Run:
@@ -295,7 +295,7 @@ ORDER BY score DESC;
 This lets you rank results by how well they match the query.
 
 5. Tips & Gotchas
-- FULLTEXT search ignores words shorter than 4 characters by default (configurable via `ft_min_word_len`)
+- FULLTEXT Search ignores words shorter than 4 characters by default (configurable via `ft_min_word_len`)
 - Works best on large datasets
 - Use `IN BOOLEAN MODE` for exact control
 - Use `WITH QUERY EXPANSION` for exploratory search
