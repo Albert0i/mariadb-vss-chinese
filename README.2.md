@@ -230,7 +230,7 @@ If you're using InnoDB's FULLTEXT, you also need:
 innodb_ft_min_token_size=1
 ```
 
-Below is my complate `my.ini`:
+Below is a complate `my.ini` locates in `C:\Program Files\MariaDB 11.7\data`:
 ```
 [mysqld]
 datadir=C:/Program Files/MariaDB 11.7/data
@@ -249,7 +249,7 @@ plugin-dir=C:\Program Files\MariaDB 11.7/lib/plugin
 ```
 
 
-#### VI. Fulltext search examples 
+#### VI. Query examples 
 > FULLTEXT indexes are supported on `CHAR`, `VARCHAR`, and `TEXT` columns in **InnoDB** and **MyISAM**.
 
 > This works because you've already segmented the Chinese text into searchable tokens.
@@ -347,6 +347,8 @@ And navigate to [http://localhost:3000/ftsearch](http://localhost:3000/ftsearch)
 ![alt welcome](img/ftsearch.JPG)
 
 Enjoy! 
+
+[Continue to part 3](README.3.md)
 
 
 #### VII. Bibliography 
