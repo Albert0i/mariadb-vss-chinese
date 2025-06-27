@@ -17,8 +17,8 @@ By default, Oracle uses the **`CHINESE_VGRAM_LEXER`** or **`CHINESE_LEXER`** whe
 
 So even with a minimal index creation like:
 
-```sql
-CREATE INDEX ft_textChiSeg ON albertoi.documents(textChiSeg)
+```
+CREATE INDEX ft_textChiSeg ON documents(textChiSeg)
   INDEXTYPE IS CTXSYS.CONTEXT;
 ```
 
@@ -157,7 +157,7 @@ The `CONTAINS` function is part of **Oracle Text**, and it allows you to search 
 SELECT * FROM documents
 WHERE CONTAINS(textChiSeg, '太陽 AND 月亮') > 0;
 
-SELECT * FROM albertoi.documents 
+SELECT * FROM documents 
 WHERE CONTAINS(TEXTCHISEG, '東西 AND 黃金' ) > 0;  
 ```
 
