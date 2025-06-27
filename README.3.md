@@ -38,14 +38,14 @@ This tells Oracle to respect the spaces in your pre-tokenized text:
 - Use spaces as token boundaries.
 - Ignore punctuation as token glue.
 
-Oracle Text normally struggles with Chinese because there's no whitespace between words. But since you've already segmented the text, you're giving it a head start, Oracle just needs to respect your boundaries. Verify it exists:
+[Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) normally struggles with Chinese because there's no whitespace between words. But since you've already segmented the text, you're giving it a head start, Oracle just needs to respect your boundaries. Verify it exists:
 ```
 SELECT pre_name, pre_owner
 FROM ctx_preferences
 WHERE pre_name = 'SEGMENTED_LEXER';
 ```
 
-To delete your custom Oracle Text preference like `segmented_lexer`, you can use the `CTX_DDL.DROP_PREFERENCE` procedure. Here's how:
+To delete your custom [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) preference like `segmented_lexer`, you can use the `CTX_DDL.DROP_PREFERENCE` procedure. Here's how:
 
 ```
 BEGIN
@@ -53,7 +53,7 @@ BEGIN
 END;
 ```
 
-This removes the preference from your schema’s Oracle Text metadata. It **does not** affect any existing indexes that were created using it—they’ll still function unless you try to rebuild or alter them.
+This removes the preference from your schema’s [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) metadata. It **does not** affect any existing indexes that were created using it—they’ll still function unless you try to rebuild or alter them.
 
 If you want to check whether it exists before dropping it (to avoid errors), you can do:
 ```
@@ -83,7 +83,7 @@ This attach the custom lexer to your `textChiSeg` column:
 
 If you’re switching schemas with `ALTER SESSION SET CURRENT_SCHEMA`, make sure the preference was created in that schema too—or use a fully qualified name like `"MYSCHEMA"."SEGMENTED_LEXER"`.
 
-Oracle Text doesn’t use a `min_word_len` setting like MySQL does, but you can achieve similar behavior by customizing the **lexer** and **stoplist** preferences. You can create a custom stoplist and add short words manually:
+[Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) doesn’t use a `min_word_len` setting like MySQL does, but you can achieve similar behavior by customizing the **lexer** and **stoplist** preferences. You can create a custom stoplist and add short words manually:
 ```
 BEGIN
   CTX_DDL.CREATE_STOPLIST('my_stoplist', 'BASIC_STOPLIST');
@@ -99,7 +99,7 @@ CREATE INDEX ft_textChiSeg ON documents(textChiSeg)
   PARAMETERS('STOPLIST my_stoplist');
 ```
 
-In Oracle, you **cannot use** `CONTAINS` **without a full-text index**. The `CONTAINS` operator is part of Oracle Text and requires a `CONTEXT` index on the column you're querying. If you try to use `CONTAINS` on a column without such an index, Oracle will raise an error like:
+In Oracle, you **cannot use** `CONTAINS` **without a full-text index**. The `CONTAINS` operator is part of [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) and requires a `CONTEXT` index on the column you're querying. If you try to use `CONTAINS` on a column without such an index, Oracle will raise an error like:
 ```
 ORA-20000: Oracle Text error:
 DRG-10599: column is not indexed
@@ -128,7 +128,7 @@ WHERE column LIKE '%keyword%'
 - **Less flexible** (no stemming, fuzzy search, or ranking)
 - **Case-sensitive** unless you use `UPPER()` or `ILIKE` (in 23c)
 
-Oracle Text indexes don’t auto-update. After inserts or updates:
+[Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) indexes don’t auto-update. After inserts or updates:
 ```
 EXEC CTX_DDL.SYNC_INDEX('FT_TEXTCHISEG');
 ```
@@ -176,7 +176,7 @@ ORDER BY relevance DESC;
 ```
 
 6. Keep Your Index in Sync
-Oracle Text indexes don’t auto-refresh. After inserts or updates, sync it manually:
+[Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) indexes don’t auto-refresh. After inserts or updates, sync it manually:
 ```sql
 EXEC CTX_DDL.SYNC_INDEX('FT_TEXTCHISEG');
 ```
