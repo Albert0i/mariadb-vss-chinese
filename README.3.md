@@ -218,7 +218,33 @@ WHERE CONTAINS(textChiSeg, '法國 OR 冬天', 1) > 0
 ORDER BY relevance DESC;
 ```
 
-6. Keep Your Index in Sync
+6. `FUZZY` – Expands your search term to include **similar words** based on spelling.
+```
+SELECT *
+FROM documents
+WHERE CONTAINS(textChiSeg, 'FUZZY(冬天)', 1) > 0
+ORDER BY SCORE(1) DESC;
+```
+
+You can fine-tune the fuzzy behavior:
+```
+FUZZY(term, score_threshold, num_results)
+```
+- score_threshold: 0–100 (default is 60)
+- num_results: max number of fuzzy expansions (default is 20)
+```
+SELECT *
+FROM documents
+WHERE CONTAINS(textChiSeg, 'FUZZY(冬天, 70, 10)', 1) > 0
+ORDER BY SCORE(1) DESC
+```
+Finds terms **70% similar** to `"冬天"`, returning up to 10 fuzzy variants.
+
+To use `FUZZY`, make sure:
+- Your index uses a lexer that supports base-letter conversion (e.g., `BASIC_LEXER` with `base_letter=YES`)
+- The wordlist allows fuzzy expansion (default is enabled)
+
+7. Keep Your Index in Sync
 [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) indexes don’t auto-refresh. After inserts or updates, sync it manually:
 ```
 BEGIN
@@ -250,17 +276,10 @@ EXEC CTX_DDL.SYNC_INDEX('ft_textChiSeg');
 
 
 #### Epilogue 
-And so, we've reached the end of your first journey into Oracle Text full-text search!
-
-From crafting your own `segmented_lexer` and building a precise index to exploring powerful queries like `NEAR`, `SCORE`, and `NOT`, you now have the tools to make your search engine both sharp and multilingual-aware. What once felt like a black box—searching across tokenized Chinese content—is now something you can shape, optimize, and fine-tune with confidence.
-
-Whether you're building a search page for users, processing legal archives, or decoding historical literature, this foundation gives you the flexibility to adapt to whatever comes next.
-
-Thanks for exploring this with me—it’s been a joy guiding you through it. Ready for wildcards, fuzzy matching, or semantic search? The next chapter is yours to write—and I’ll be right here to help when you’re ready.
+As you can see, the setup and use of Fulltext Search in Chinese of Oracle is significantly different from that of MariaDB, but they both hinge on the same thing, ie. **tokenization**. The success of fast and accurate search depends on a good tokenizing policy. 
 
 
 ### EOF (2025/06/30)
-
 
 ALTER SESSION SET CURRENT_SCHEMA = YOURSCHEMA
 
@@ -275,6 +294,7 @@ BEGIN
   CTX_DDL.CREATE_PREFERENCE('segmented_lexer', 'BASIC_LEXER');
   CTX_DDL.SET_ATTRIBUTE('segmented_lexer', 'whitespace', 'YES');
   CTX_DDL.SET_ATTRIBUTE('segmented_lexer', 'printjoins', 'NO');
+  CTX_DDL.SET_ATTRIBUTE('segmented_lexer', 'base_letter', 'YES');
 END;
 
 DROP INDEX ft_textChiSeg; 
