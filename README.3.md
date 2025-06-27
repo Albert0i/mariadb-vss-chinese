@@ -11,7 +11,7 @@ Full-text search lets you find relevant words or phrases buried deep in large te
 
 
 #### I. [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) (TL;DR)
-That works with Chinese because Oracle Text’s `CONTEXT` index type is **multilingual-aware** and supports Chinese out of the box—thanks to its built-in lexers designed for East Asian languages.
+It works with Chinese because Oracle Text’s `CONTEXT` index type is **multilingual-aware** and supports Chinese out of the box—thanks to its built-in lexers designed for East Asian languages.
 
 By default, Oracle uses the **`CHINESE_VGRAM_LEXER`** or **`CHINESE_LEXER`** when it detects Chinese-language content, especially if your database character set is UTF-8 and the NLS_LANGUAGE is set appropriately. These lexers tokenize Chinese text using overlapping character sequences (like bigrams), which allows Oracle to index and search Chinese phrases even without spaces between words.
 
