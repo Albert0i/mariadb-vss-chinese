@@ -20,6 +20,11 @@
 
 
 #### V. Bibliography
+1. []()
+2. []()
+3. []()
+4. []()
+5. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
 
 #### Epilogue 
