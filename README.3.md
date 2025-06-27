@@ -52,7 +52,7 @@ If you’ve already segmented the text using a tool like [Jieba](https://pypi.or
 | No need for custom lexer | Use `BASIC_LEXER` with `whitespace=YES` |
 
 
-#### II. Create a Table
+#### II. Create a table
 Suppose you’re storing Chinese text and its segmented version (tokens separated by spaces) in a simple table like so:
 ```
 CREATE TABLE documents (
@@ -112,7 +112,7 @@ END;
 ```
 
 
-#### IV. Create a Full-Text Index
+#### IV. Create a full-text index
 Then create your index like this: 
 ```
 CREATE INDEX ft_textChiSeg ON documents(textChiSeg)
