@@ -24,7 +24,7 @@ Where `textChi` contains '今天的天空晴朗且蔚藍'; `textChiSeg` contains
 
 
 #### II. Create a Lexer Preference
-By default, [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) uses a lexer to tokenize input during indexing. If your data is already segmented (e.g., "太陽 月亮 星星"), you can tell Oracle to treat spaces as token boundaries by using the **BASIC_LEXER** with `printjoins=NO` and `whitespace=YES`. 
+By default, [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) uses a lexer to tokenize input during indexing. If your data is already segmented (e.g., "星星 月亮 太陽"), you can tell Oracle to treat spaces as token boundaries by using the **BASIC_LEXER** with `printjoins=NO` and `whitespace=YES`. 
 ```
 BEGIN
   CTX_DDL.CREATE_PREFERENCE('segmented_lexer', 'BASIC_LEXER');
