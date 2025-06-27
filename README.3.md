@@ -18,7 +18,7 @@ By default, Oracle uses the **`CHINESE_VGRAM_LEXER`** or **`CHINESE_LEXER`** whe
 So even with a minimal index creation like:
 
 ```
-CREATE INDEX ft_textChiSeg ON documents(textChiSeg)
+CREATE INDEX ft_textChi ON documents(textChi)
   INDEXTYPE IS CTXSYS.CONTEXT;
 ```
 
