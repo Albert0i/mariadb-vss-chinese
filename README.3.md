@@ -7,7 +7,7 @@
 #### Prologue 
 Oracle supports [Vector Search](https://www.oracle.com/database/ai-vector-search/) from version 23ai onward, for sure it is [A Bridge Too Far](https://en.wikipedia.org/wiki/A_Bridge_Too_Far_(film))... How about using Fulltext Search on Chinese data today? 
 
-Full-text search lets you find relevant words or phrases buried deep in large text columns faster and more flexibly than using plain `LIKE` queries. With Oracle Text, you can build a smart search engine right inside your database. Let’s start from scratch!
+Full-text search lets you find relevant words or phrases buried deep in large text columns faster and more flexibly than using plain `LIKE` queries. With [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E), you can build a smart search engine right inside your database. Let’s start from scratch!
 
 
 #### I. [Oracle Text](https://docs.oracle.com/en/database/oracle/oracle-database/19/ccapp/understanding-oracle-text-application-development.html#GUID-CF13C01A-F5E6-4EF5-839B-C09CF0024D5E) (TL;DR)
