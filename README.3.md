@@ -22,7 +22,7 @@ CREATE INDEX ft_textChi ON documents(textChi)
   INDEXTYPE IS CTXSYS.CONTEXT;
 ```
 
-… it can still tokenize and index Chinese content effectively, unless you override the lexer or stoplist. 
+It can still tokenize and index Chinese content effectively, unless you override the lexer or stoplist. 
 
 If you want even better control (like using your own segmentation or stop words), you can define a custom lexer and attach it via the `PARAMETERS` clause. 
 
