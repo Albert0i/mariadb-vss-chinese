@@ -26,19 +26,16 @@ It can still tokenize and index Chinese content effectively, unless you override
 
 If you want even better control (like using your own segmentation or stop words), you can define a custom lexer and attach it via the `PARAMETERS` clause. 
 
-If you don’t tokenize `textChiSeg`meaning the text remains as raw, unsegmented Chinese like `"星星月亮太陽", Oracle Text will still try to index it, but the results may be **less accurate or useful**, depending on the lexer in use.
-
+If you don’t tokenize `textChi`meaning the text remains as raw, unsegmented Chinese like `"星星月亮太陽", Oracle Text will still try to index it, but the results may be **less accurate or useful**, depending on the lexer in use.
 
 If you create a `CONTEXT` index without specifying a lexer, Oracle may default to:
-- **`CHINESE_VGRAM_LEXER`**: breaks text into overlapping bigrams (e.g., `"月亮太陽"` → `"月亮"`, `"亮太"`, `"太陽"`).
+- **`CHINESE_VGRAM_LEXER`**: breaks text into overlapping bigrams (e.g., `"星星月亮太陽"` → `"星星"`, `"星月"`,``"月亮"`, `"亮太"`, `"太陽"`).
 - **`CHINESE_LEXER`**: uses dictionary-based segmentation (less common unless explicitly set).
 
-So even without spaces, Oracle can still index and search Chinese—but:
-
+So even without spaces, Oracle can still index and search Chinese, but:
 - **You lose control** over how words are segmented.
 - **Ambiguity increases**, especially with compound words or idioms.
 - **Search precision drops**, especially for exact phrase matching.
-
 
 If you’ve already segmented the text using a tool like [Jieba](https://pypi.org/project/jieba/) or [CKIP](https://ckip.iis.sinica.edu.tw/), you can:
 - Improve search accuracy
