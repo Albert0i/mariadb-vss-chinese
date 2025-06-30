@@ -12,7 +12,7 @@ export function getIndexName() {
 }
 
 export async function findDocuments(indexName, query, limit = 5) {
-    await redis.connect()
+    //await redis.connect()
 
     // Find documents 
     const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
@@ -34,7 +34,7 @@ export async function findDocuments(indexName, query, limit = 5) {
  }
  
  export async function countDocuments(indexName, query) { 
-    await redis.connect()
+    //await redis.connect()
 
     // Count documents 
     // { total: 5, documents: [] }

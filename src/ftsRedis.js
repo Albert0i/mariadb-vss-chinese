@@ -146,6 +146,7 @@ function twist(inputArray) {
 
    return outputArray
 }
+
 /*
 FT.CREATE fts:chinese:index 
     ON HASH PREFIX 1 fts:chinese:document: LANGUAGE chinese 
@@ -156,7 +157,7 @@ FT.CREATE fts:chinese:index
     createdAt TAG SORTABLE 
     updatedAt TAG SORTABLE 
     updateIdent NUMERIC SORTABLE 
-*/
+*/ 
 /*
 FT.SEARCH fts:chinese:index "@textChi:夏天" NOCONTENT
 
