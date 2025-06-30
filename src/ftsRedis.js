@@ -73,7 +73,16 @@ async function findDocuments(indexName, query, limit = 5) {
    const docs = twist(searchResults)
 
    // Update `visited` field
-
+   const promises = [];    // Collect promises 
+   docs.forEach(doc => { 
+         const now = new Date(); 
+         const isoDate = now.toISOString();   
+         promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'visited', 1)))
+         promises.push(redis.hSet(`fts:chinese:document:${doc.id}`, 'updatedAt', isoDate))
+         promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'updateIdent', 1)))
+       })
+   await Promise.all(promises); // Resolve all at once
+   
    return docs
 }
 
