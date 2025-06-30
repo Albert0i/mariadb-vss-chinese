@@ -5,6 +5,21 @@
 
 
 #### Prologue 
+To consummate our story of Fulltext Search, we pull in our old friend... Redis is a memoory-first multi-model NoSQL database. 
+
+[Chinese support](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/chinese/)
+
+> When using `FT.SEARCH` in RediSearch to query Chinese characters, you don’t need to manually encode them **but you do need to configure the index and query properly to support Chinese tokenization**. 
+
+> A stemmer is used for the supplied language during indexing. If an unsupported language is sent, the command returns an error. The supported languages are Arabic, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, Greek, Hungarian, Indonesian, Irish, Italian, Lithuanian, Nepali, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Tamil, Turkish, and Chinese.
+
+> When adding Chinese language documents, set LANGUAGE chinese for the indexer to properly tokenize the terms. If you use the default language, then search terms are extracted based on punctuation characters and whitespace. The Chinese language tokenizer makes use of a segmentation algorithm (via [Friso](https://github.com/lionsoul2014/friso)), which segments text and checks it against a predefined dictionary. See [Stemming](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/stemming/) for more information.
+
+
+#### I. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/), [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) and [FT.AGGREGATE](https://redis.io/docs/latest/commands/ft.aggregate/) (TL;DR)
+
+
+#### II. Create a full-text index
 [FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html)
 ```
 {
@@ -17,6 +32,8 @@
     "updateIdent": 0
 }
 ```
+![alt FT.CREATE Helper](img/FT_CREATE_helper.JPG)
+
 ```
 FT.CREATE fts:chinese:index 
     ON HASH PREFIX 1 fts:chinese:document: SCHEMA 
@@ -27,37 +44,9 @@ FT.CREATE fts:chinese:index
     createdAt TAG SORTABLE 
     updatedAt TAG SORTABLE 
     updateIdent NUMERIC SORTABLE 
-
-FT.CREATE fts:chinese:index
-    ON JSON
-    PREFIX 1 fts:chinese:document:
-    SCHEMA
-    $.id AS id NUMERIC SORTABLE
-    $.textChi AS textChi TEXT SORTABLE
-    $.textChiSeg AS textChiSeg TEXT SORTABLE
 ```
 
-**Explanation**
-- `FT.CREATE fts:chinese:index`: Creates a new index named `fts:chinese:index`.
-- `ON JSON`: Specifies that the index is for JSON documents.
-- `PREFIX 1 fts:chinese:document:`: Specifies that the index should include documents with the prefix `fts:chinese:document:`.
-- `SCHEMA`: Defines the schema for the index.
-
-`$.id AS id NUMERIC SORTABLE`: Maps the JSON path `$.id` to the field `id` of type `NUMERIC` and makes it sortable.
-`$.textChi AS textChi TEXT SORTABLE`: Maps the JSON path `$.textChi` to the field `textChi` of type `TEXT` and makes it sortable.
-`$.textChiSeg AS textChiSeg TEXT SORTABLE`: Maps the JSON path `$.textChiSeg` to the field `textChiSeg` of type `TEXT` and makes it sortable.
-
-**Summary**
-The corrected command ensures that each field in the schema has an alias and follows the correct syntax for creating a RediSearch index on JSON documents. Here is the final command:
-
-
-
-This command will create an index on JSON documents with the specified schema, allowing you to perform efficient searches and sorts on the `id`, `textChi`, and `textChiSeg` fields.
-
-
-
-
-#### I. 
+This use [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) to create a Fulltext index for HASH data structures. 
 
 
 #### II. 
