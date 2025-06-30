@@ -66,6 +66,31 @@ await redis.close()
 /* 
    Helpers 
 */
+async function findDocuments(indexName, query, limit = 5) {
+   // Find documents 
+   const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
+   const searchResults = await redis.sendCommand(redisCommand.split(' '));
+   const docs = twist(searchResults)
+
+   // Update `visited` field
+
+   return docs
+}
+
+async function countDocuments(indexName, query) { 
+   // Count documents 
+   // { total: 5, documents: [] }
+   const { total } = await redis.ft.search(indexName, query, {
+      NOCONTENT: true,
+      LIMIT: {
+         from: 0, // Offset
+         size: 0  // Number of results to return
+      }
+  }); 
+
+  return total
+}
+
 /* 
    “Even the straightest road has its twist.”
    [
@@ -99,7 +124,6 @@ function twist(inputArray) {
    let outputArray = []
    let obj = {}
    
-   console.log('inputArray =', inputArray)
    for (let i = 1; i < inputArray.length; i += 3) {
       const values = inputArray[i + 2]
       for (let j=0; j < values.length; j +=2) {
@@ -112,31 +136,6 @@ function twist(inputArray) {
    }
 
    return outputArray
-}
-
-async function findDocuments(indexName, query, limit = 5) {
-   // Find documents 
-   const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
-   const searchResults = await redis.sendCommand(redisCommand.split(' '));
-   const docs = twist(searchResults)
-
-   // Update `visited` field
-   
-   return docs
-}
-
-async function countDocuments(indexName, query) { 
-   // Count documents 
-   // { total: 5, documents: [] }
-   const { total } = await redis.ft.search(indexName, query, {
-      NOCONTENT: true,
-      LIMIT: {
-         from: 0, // Offset
-         size: 0  // Number of results to return
-      }
-  }); 
-
-  return total
 }
 /*
 FT.CREATE fts:chinese:index 
