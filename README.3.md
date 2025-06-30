@@ -1,5 +1,5 @@
 ### Fulltext Search in Chinese using Oracle 19c
-> 「逆風！，轉個頭來就是順風。」<br />"Headwind! Turn around and it comes tailwind."
+> 「逆風！，轉個頭來就是順風。」<br />"Headwind! Turn around and it comes a tailwind."
 
 **DISCLAIMER: Over 90% of this article is written by HIM, i mean AI**
 
@@ -280,7 +280,7 @@ As you can see, the setup and use of Fulltext Search in Chinese of Oracle is sig
 
 
 ### EOF (2025/06/30)
-
+```
 ALTER SESSION SET CURRENT_SCHEMA = YOURSCHEMA
 
 CREATE TABLE documents (
@@ -333,3 +333,4 @@ INSERT INTO documents (textChi, textChiSeg) VALUES
 
 INSERT INTO documents (textChi, textChiSeg) VALUES
 ('打掃房子是保持整潔的好方法', '打掃 房子 是 保持 整潔 好 方法');
+```

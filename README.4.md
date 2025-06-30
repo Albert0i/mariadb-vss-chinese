@@ -6,14 +6,28 @@
 
 #### Prologue 
 [FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html)
-
+```
 {
     "id": 1,
-    "textChi": "今天的天空晴朗且蔚藍", 
-    "textChiSeg": "今天 天空 晴朗 且 蔚藍"
+    "textChi":     "今天的天空晴朗且蔚藍", 
+    "textChiSeg":  "今天 天空 晴朗 且 蔚藍", 
+    "visited":     0, 
+    "createdAt":   "2025-06-30T01:22:46.562Z", 
+    "updatedAt":   "", 
+    "updateIdent": 0
 }
-
 ```
+```
+FT.CREATE fts:chinese:index 
+    ON HASH PREFIX 1 fts:chinese:document: SCHEMA 
+    id NUMERIC SORTABLE 
+    textChi TEXT WEIGHT 1.0 SORTABLE 
+    textChiSeg TEXT WEIGHT 1.0 SORTABLE 
+    visited NUMERIC SORTABLE 
+    createdAt TAG SORTABLE 
+    updatedAt TAG SORTABLE 
+    updateIdent NUMERIC SORTABLE 
+
 FT.CREATE fts:chinese:index
     ON JSON
     PREFIX 1 fts:chinese:document:
@@ -98,3 +112,9 @@ INSERT INTO documents (textChi, textChiSeg) VALUES
 INSERT INTO documents (textChi, textChiSeg) VALUES
 ('打掃房子是保持整潔的好方法', '打掃 房子 是 保持 整潔 好 方法');
 
+```
+const now = new Date(); // Creates a Date object for the current date and time
+const isoDate = now.toISOString(); // Converts the Date object to an ISO string
+
+console.log(isoDate); // Example output: 2025-06-30T14:21:00.000Z (time will vary based on execution)
+```
