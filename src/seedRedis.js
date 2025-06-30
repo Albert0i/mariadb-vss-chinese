@@ -31,7 +31,7 @@ for (let i = 0; i < documents.length; i++) {
     promises.push(redis.hSet(`fts:chinese:document:${i + 1}`, {
         id: i + 1, 
         textChi: documents[i],
-        textChiSeg: tokens.map(t => t.text).join(' '),
+        // textChiSeg: tokens.map(t => t.text).join(' '),
         visited:   0, 
         createdAt: isoDate, 
         updatedAt: "", 
@@ -53,19 +53,18 @@ FT.CREATE fts:chinese:index
     ON HASH PREFIX 1 fts:chinese:document: LANGUAGE chinese 
     SCHEMA 
     id NUMERIC SORTABLE 
-    textChi TEXT WEIGHT 1.0 SORTABLE 
-    textChiSeg TEXT WEIGHT 1.0 SORTABLE 
+    textChi TEXT WEIGHT 1.0 SORTABLE     
     visited NUMERIC SORTABLE 
     createdAt TAG SORTABLE 
     updatedAt TAG SORTABLE 
     updateIdent NUMERIC SORTABLE 
 */
 /*
-FT.SEARCH fts:chinese:index "@textChiSeg:夏天" NOCONTENT
+FT.SEARCH fts:chinese:index "@textChi:夏天" NOCONTENT
 
 findDocuments: 
-FT.SEARCH fts:chinese:index "@textChiSeg:夏天" WITHSCORES RETURN 2 textChi, id
+FT.SEARCH fts:chinese:index "@textChi:夏天" WITHSCORES RETURN 2 textChi id
 
 countDocuments: 
-FT.SEARCH fts:chinese:index "@textChiSeg:夏天" NOCONTENT
+FT.SEARCH fts:chinese:index "@textChi:夏天" NOCONTENT
 */

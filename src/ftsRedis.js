@@ -5,7 +5,7 @@ import { redis } from './redis/redis.js'
 */
 await redis.connect()
 const indexName = 'fts:chinese:index';
-const query = '@textChiSeg:夏天'; // Custom query
+const query = '@textChi:夏天'; // Custom query
 /*
    Interface one 
 */
@@ -32,49 +32,21 @@ searchResults.documents.forEach(document => {
 /*
    Interface two
 */
-const redisCommand = 'FT.SEARCH fts:chinese:index "@textChiSeg:夏天" WITHSCORES RETURN 2 textChi id LIMIT 0 100'
+const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 100`
 console.log(redisCommand.split(' '))
 const secondSearchResults = await redis.sendCommand(redisCommand.split(' '));
 // Process and log the search results
 console.log('secondSearchResults =', secondSearchResults)
-
-
-// const numResults = searchResults.total;
-// const results = searchResults.documents.map(doc => ({
-//     id: doc.id,
-//     value: doc.value
-// }));
-// const results = searchResults.documents.map(doc => ({
-//     docId: doc.id,
-//     fields: doc.value,
-//     score: doc.score || doc.value.score // Adjusted to access score correctly
-// }));
-
-// console.log('Number of Results:', numResults);
-// results.forEach(result => {
-//     console.log(`Document ID: ${result.docId}`);
-//     console.log(`Fields: ${JSON.stringify(result.fields)}`);
-//     console.log(`Score: ${result.score}`);
-//     console.log('---');
-// } )
-// console.log('searchResults = ', searchResults)
-// console.log('Number of Results:', searchResults.total);
-// console.log('Search Results:');
-// searchResults.documents.map(document => {
-//     console.log('document =', document)
-// })
-
-
-// const numResults = searchResults[0];
-// const results = [];
-
-// for (let i = 1; i < searchResults.length; i += 3) {
-//     const docId = searchResults[i];
-//     const fields = searchResults[i + 1];
-//     const score = searchResults[i + 2];
-//     results.push({ docId, fields, score });
-// }
-
+console.log('Number of Results:', secondSearchResults[0]);
+for (let i = 1; i < secondSearchResults.length; i += 3) {
+   console.log(`document id: ${secondSearchResults[i]}`);
+   console.log(`score: ${secondSearchResults[i+1]}`);
+   //console.log(`values: ${secondSearchResults[i+2]}`);
+   const values = secondSearchResults[i + 2]
+   for (let j=0; j < values.length; j +=2) {
+      console.log(`${values[j]}: ${values[j+1]}`);
+   }
+}
 
 await redis.close()
 /*
