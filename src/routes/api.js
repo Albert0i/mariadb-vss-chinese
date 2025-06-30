@@ -8,6 +8,9 @@ const router = express.Router();
 import { PrismaClient } from '../generated/prisma/index.js'; 
 const prisma = new PrismaClient();
 
+// Redis 
+import { redis } from '../redis/redis.js'
+
 // POST /api/v1/search
 router.post('/search', async (req, res) => {
   const { query } = req.body;
@@ -177,6 +180,68 @@ async function countDocuments(query, mode, expand) {
   const [ { count } ] = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
 
   return count.toString() 
+}
+
+/*
+   Redis Fulltext Search Support
+*/
+// POST /api/v1/ftsearchredis
+router.post('/ftsearchredis', async (req, res) => {  
+  res.status(200).json({results: [
+    { textChi: '夏天的海灘充滿歡笑與快樂', id: '31', score: '14' },
+    { textChi: '夏天的冰淇淋讓人感到無比清涼', id: '88', score: '14' },
+    { textChi: '夏天的微風讓人感覺舒適', id: '67', score: '14' },
+    { textChi: '夏天的海灘充滿活力', id: '246', score: '14' },
+    { textChi: '夏天的微風帶來涼爽的感受', id: '392', score: '7' }
+  ]})
+})
+
+// GET /api/v1/ftcheckredis
+router.get('/ftcheckredis', async (req, res) => {  
+  res.status(200).json({ success: true, count: 5 })
+})
+
+async function findDocumentsRedis(indexName, query, limit = 5) {
+  // Find documents 
+  const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
+  const searchResults = await redis.sendCommand(redisCommand.split(' '));
+  const docs = twist(searchResults)
+
+  // Update `visited` field
+
+  return docs
+}
+
+async function countDocumentsRedis(indexName, query) { 
+  // Count documents 
+  // { total: 5, documents: [] }
+  const { total } = await redis.ft.search(indexName, query, {
+     NOCONTENT: true,
+     LIMIT: {
+        from: 0, // Offset
+        size: 0  // Number of results to return
+     }
+ }); 
+
+ return total
+}
+
+function twist(inputArray) {
+  let outputArray = []
+  let obj = {}
+  
+  for (let i = 1; i < inputArray.length; i += 3) {
+     const values = inputArray[i + 2]
+     for (let j=0; j < values.length; j +=2) {
+        obj[values[j]] = values[j+1]
+     }
+     obj.score = inputArray[i+1]
+
+     outputArray.push(obj)
+     obj = {}
+  }
+
+  return outputArray
 }
 
 export default router;
