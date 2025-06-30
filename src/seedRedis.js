@@ -1,37 +1,23 @@
 import { redis } from './redis/redis.js'
 import { documents } from '../data/documents.js'
-import { removeWords } from './helper.js'
-
-import tokenizer from 'chinese-tokenizer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Resolve dictionary path
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dictPath = path.join(__dirname, '..', 'src', 'dictionary', 'cedict_ts.u8');
-
-// Load the dictionary and get the tokenizer instance
-const segment = tokenizer.loadFile(dictPath);
 
 await redis.connect()
 /*
     Flush all data 
     await redis.flushDb()
 */
-await redis.flushDb()
 
+/*
+   main 
+*/
 let promises = [];
-
 for (let i = 0; i < documents.length; i++) {
-    const tokens = segment(removeWords(documents[i]));
     const now = new Date(); 
     const isoDate = now.toISOString(); 
     
     promises.push(redis.hSet(`fts:chinese:document:${i + 1}`, {
         id: i + 1, 
-        textChi: documents[i],
-        // textChiSeg: tokens.map(t => t.text).join(' '),
+        textChi: documents[i],        
         visited:   0, 
         createdAt: isoDate, 
         updatedAt: "", 
@@ -67,4 +53,7 @@ FT.SEARCH fts:chinese:index "@textChi:夏天" WITHSCORES RETURN 2 textChi id
 
 countDocuments: 
 FT.SEARCH fts:chinese:index "@textChi:夏天" NOCONTENT
+
+
+FT.SEARCH fts:chinese:index "@visited:[0 +inf]" NOCONTENT
 */

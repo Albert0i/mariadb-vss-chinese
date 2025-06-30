@@ -148,7 +148,7 @@ async function findDocuments(query, mode, expand, limit = 5) {
                     `
     const docs = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
 
-    // Update `visited` field                                    
+    // Update `visited` field 
     const promises = [];    // Collect promises 
     docs.forEach(doc => { 
             promises.push(prisma.$executeRaw`
