@@ -72,19 +72,23 @@ router.get('/ftcheck', async (req, res) => {
 /*
    Fulltext Search (Redis)
 */
-// POST /api/v1/ftsearchredis
-router.post('/ftsearchredis', async (req, res) => {  
-  res.status(200).json({results: [
-    { textChi: '夏天的海灘充滿歡笑與快樂', id: '31', score: '14' },
-    { textChi: '夏天的冰淇淋讓人感到無比清涼', id: '88', score: '14' },
-    { textChi: '夏天的微風讓人感覺舒適', id: '67', score: '14' },
-    { textChi: '夏天的海灘充滿活力', id: '246', score: '14' },
-    { textChi: '夏天的微風帶來涼爽的感受', id: '392', score: '7' }
-  ]})
+// POST /api/v1/ftsredis
+router.post('/ftsredis', async (req, res) => {  
+  const { query } = req.body;
+  console.log('query =', query)
+  res.status(200).json([
+                        { textChi: '夏天的海灘充滿歡笑與快樂', id: '31', score: 14 },
+                        { textChi: '夏天的冰淇淋讓人感到無比清涼', id: '88', score: 14 },
+                        { textChi: '夏天的微風讓人感覺舒適', id: '67', score: 14 },
+                        { textChi: '夏天的海灘充滿活力', id: '246', score: 14 },
+                        { textChi: '夏天的微風帶來涼爽的感受', id: '392', score: 7 }
+                      ])
 })
 
 // GET /api/v1/ftcheckredis
 router.get('/ftcheckredis', async (req, res) => {  
+  const { query } = req.query
+  console.log('query =', query)
   res.status(200).json({ success: true, count: 5 })
 })
 

@@ -99,20 +99,21 @@ router.post('/ftsearch', async (req, res) => {
 */
 // Fulltext Search page - GET (initial form) 
 router.get('/ftsredis', (req, res) => {
-  res.render('ftsredis', { query: '', mode: 'natural', expand: '', results: [] } );
+  res.render('ftsredis', { query: '', results: [] } );
 });
 
 // Fulltext Search page - POST (handle query & render results)
 router.post('/ftsredis', async (req, res) => {
-  const { query, mode, expand } = req.body;
-  
-  const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/ftsearchredis`, {
+  const { query } = req.body;
+  console.log('query =', query)
+  const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/ftsredis`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, mode, expand })
+    body: JSON.stringify({ query })
   });
   const results = await response.json();
-  res.render('ftsearchredis', { query, mode, expand, results } );
+  console.log('results =', results)
+  res.render('ftsredis', { query, results } );
 });
 
 export default router;
