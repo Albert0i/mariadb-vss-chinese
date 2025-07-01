@@ -1,6 +1,7 @@
 /* 
    Redis Helper Functins 
 */
+import 'dotenv/config'
 import { redis } from './redis/redis.js '
 
 export function getIndexName() {

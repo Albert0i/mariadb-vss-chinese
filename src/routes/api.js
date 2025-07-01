@@ -2,15 +2,13 @@ import 'dotenv/config'
 import express from 'express';
 import { findSimilarDocuments, addDocument } from '../embedder.js';
 
+import { getStatus, getDocument, findDocuments, countDocuments } from '../mariadbHelper.js'
+
 const router = express.Router();
 
-// Prisma 
-import { PrismaClient } from '../generated/prisma/index.js'; 
-const prisma = new PrismaClient();
-
-// Redis 
-import { redis } from '../redis/redis.js'
-
+/*
+   Vector Semantic Search (MariaDB)
+*/
 // POST /api/v1/search
 router.post('/search', async (req, res) => {
   const { query } = req.body;
@@ -42,77 +40,18 @@ router.post('/add', async (req, res) => {
 
 // GET /api/v1/stats
 router.get('/stats', async (req, res) => {
-  const [{ version }] = await prisma.$queryRaw`SELECT VERSION() AS version`;
-  const model = process.env.MODEL_NAME
-  const documents = await prisma.documents.count()
-  const [{ _, size }] = await await prisma.$queryRaw`
-                            SELECT table_name AS 'table',
-                                    ROUND((data_length + index_length) / 1024 / 1024, 2) AS 'size'
-                            FROM information_schema.tables
-                            WHERE table_schema = 'vss' AND table_name = 'documents';
-                            `;
-  const visited = await prisma.documents.count({ 
-    where: {
-      visited: { gt: 0 }
-    }
-  })
-  /*
-     SELECT id, textChi, visited 
-     FROM documents 
-     WHERE visited > 0 
-     ORDER BY visited DESC, updatedAt DESC
-     LIMIT 100 OFFSET 0;
-  */  
-  const results = await prisma.documents.findMany({
-    select: {
-      id: true,
-      textChi: true,
-      visited: true,
-    },
-    where: {
-      visited: { gt: 0 }
-    },
-    orderBy: [
-      { visited: 'desc' },
-      { updatedAt: 'desc' }
-    ],
-    skip: 0, 
-    take: parseInt(process.env.MAX_RETURN, 10)
-  })
-  res.status(200).json({ 
-    version,
-    model, 
-    documents,
-    size, 
-    visited, 
-    results
-  });
+  res.status(200).json(await getStatus())
 });
 
 // GET /api/v1/details?id=xxx
 router.get('/details', async (req, res) => {
   const id = parseInt(req.query.id, 10);
-  /*
-     SELECT id, textChi, visited, createdAT, updatedAt, updateIdent 
-     FROM documents 
-     WHERE id=xxx
-  */
-  const doc = await prisma.documents.findUnique({ 
-    select: {
-      id: true,
-      textChi: true,
-      visited: true,
-      createdAt: true,
-      updatedAt: true,
-      updateIdent: true
-    },
-    where: { id }
-  })
-  res.status(200).json(doc);
+
+  res.status(200).json(await getDocument(id))
 });
 
 /*
-   Fulltext Search Support
+   Fulltext Search Support (MariaDB)
 */
 // POST /api/v1/ftsearch
 router.post('/ftsearch', async (req, res) => {
@@ -131,59 +70,7 @@ router.get('/ftcheck', async (req, res) => {
 });
 
 /*
-    AI: 
-    Why use $queryRawUnsafe?
-    Because WITH QUERY EXPANSION isn't compatible with Prisma’s standard query builder, 
-    and you're injecting raw SQL features. Be sure to properly sanitize any dynamic input 
-    if you interpolate it—although using placeholders like ? here is already good practice.
-*/
-async function findDocuments(query, mode, expand, limit = 5) {
-    // Find documents 
-    const sqlStmt = ` SELECT textChi,
-                             MATCH(textChiSeg) AGAINST (? 
-                                   ${ mode==='boolean' ? 'IN BOOLEAN MODE': '' }
-                                   ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } ) AS distance,
-                             id
-                      FROM documents
-                      HAVING distance > 0
-                      ORDER BY distance DESC
-                      LIMIT ${limit} OFFSET 0
-                    `
-    const docs = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
-
-    // Update `visited` field 
-    const promises = [];    // Collect promises 
-    docs.forEach(doc => { 
-            promises.push(prisma.$executeRaw`
-                            UPDATE documents 
-                            SET visited = visited + 1, 
-                                updatedAt = Now(), 
-                                updateIdent = updateIdent + 1
-                            WHERE id=${doc.id}
-                          `
-              )
-        })
-    await Promise.all(promises); // Resolve all at once
-
-    return docs 
-}
-
-async function countDocuments(query, mode, expand) {
-  // Count documents 
-  const sqlStmt = ` SELECT count(*) AS count
-                    FROM documents
-                    WHERE MATCH(textChiSeg) AGAINST (? 
-                                 ${ mode==='boolean' ? 'IN BOOLEAN MODE': '' }
-                                 ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } )
-                  `
-  // [ { count: 3n } ]
-  const [ { count } ] = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
-
-  return count.toString() 
-}
-
-/*
-   Redis Fulltext Search Support
+   Fulltext Search Support (Redis)
 */
 // POST /api/v1/ftsearchredis
 router.post('/ftsearchredis', async (req, res) => {  
@@ -201,57 +88,62 @@ router.get('/ftcheckredis', async (req, res) => {
   res.status(200).json({ success: true, count: 5 })
 })
 
-async function findDocumentsRedis(indexName, query, limit = 5) {
-  // Find documents 
-  const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
-  const searchResults = await redis.sendCommand(redisCommand.split(' '));
-  const docs = twist(searchResults)
+// GET /api/v1/stats
+router.get('/statsredis', async (req, res) => {
+  res.status(200).json(await getStatus())
+});
 
-  // Update `visited` field
-  const promises = [];    // Collect promises 
-  docs.forEach(doc => { 
-        const now = new Date(); 
-        const isoDate = now.toISOString();   
-        promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'visited', 1)))
-        promises.push(redis.hSet(`fts:chinese:document:${doc.id}`, 'updatedAt', isoDate))
-        promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'updateIdent', 1)))
-      })
-  await Promise.all(promises); // Resolve all at once
+// async function findDocumentsRedis(indexName, query, limit = 5) {
+//   // Find documents 
+//   const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
+//   const searchResults = await redis.sendCommand(redisCommand.split(' '));
+//   const docs = twist(searchResults)
+
+//   // Update `visited` field
+//   const promises = [];    // Collect promises 
+//   docs.forEach(doc => { 
+//         const now = new Date(); 
+//         const isoDate = now.toISOString();   
+//         promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'visited', 1)))
+//         promises.push(redis.hSet(`fts:chinese:document:${doc.id}`, 'updatedAt', isoDate))
+//         promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'updateIdent', 1)))
+//       })
+//   await Promise.all(promises); // Resolve all at once
   
-  return docs
-}
+//   return docs
+// }
 
-async function countDocumentsRedis(indexName, query) { 
-  // Count documents 
-  // { total: 5, documents: [] }
-  const { total } = await redis.ft.search(indexName, query, {
-     NOCONTENT: true,
-     LIMIT: {
-        from: 0, // Offset
-        size: 0  // Number of results to return
-     }
- }); 
+// async function countDocumentsRedis(indexName, query) { 
+//   // Count documents 
+//   // { total: 5, documents: [] }
+//   const { total } = await redis.ft.search(indexName, query, {
+//      NOCONTENT: true,
+//      LIMIT: {
+//         from: 0, // Offset
+//         size: 0  // Number of results to return
+//      }
+//  }); 
 
- return total
-}
+//  return total
+// }
 
-function twist(inputArray) {
-  let outputArray = []
-  let obj = {}
+// function twist(inputArray) {
+//   let outputArray = []
+//   let obj = {}
   
-  for (let i = 1; i < inputArray.length; i += 3) {
-     const values = inputArray[i + 2]
-     for (let j=0; j < values.length; j +=2) {
-        obj[values[j]] = values[j+1]
-     }
-     obj.score = inputArray[i+1]
+//   for (let i = 1; i < inputArray.length; i += 3) {
+//      const values = inputArray[i + 2]
+//      for (let j=0; j < values.length; j +=2) {
+//         obj[values[j]] = values[j+1]
+//      }
+//      obj.score = inputArray[i+1]
 
-     outputArray.push(obj)
-     obj = {}
-  }
+//      outputArray.push(obj)
+//      obj = {}
+//   }
 
-  return outputArray
-}
+//   return outputArray
+// }
 
 export default router;
 

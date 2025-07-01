@@ -73,7 +73,10 @@ router.get('/feature', (req, res) => {
   res.redirect('/mariadb-vss-chinese.pdf');
 });
 
-// Fulltext Search page - GET (initial form)
+/*
+   MariaDB 
+*/
+// Fulltext Search page - GET (initial form) 
 router.get('/ftsearch', (req, res) => {
   res.render('ftsearch', { query: '', mode: 'natural', expand: '', results: [] } );
 });
@@ -89,6 +92,27 @@ router.post('/ftsearch', async (req, res) => {
   });
   const results = await response.json();
   res.render('ftsearch', { query, mode, expand, results } );
+});
+
+/*
+   Redis
+*/
+// Fulltext Search page - GET (initial form) 
+router.get('/ftsearchredis', (req, res) => {
+  res.render('ftsearchredis', { query: '', mode: 'natural', expand: '', results: [] } );
+});
+
+// Fulltext Search page - POST (handle query & render results)
+router.post('/ftsearchredis', async (req, res) => {
+  const { query, mode, expand } = req.body;
+  
+  const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/ftsearchredis`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, mode, expand })
+  });
+  const results = await response.json();
+  res.render('ftsearchredis', { query, mode, expand, results } );
 });
 
 export default router;
