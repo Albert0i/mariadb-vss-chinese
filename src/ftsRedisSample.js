@@ -1,5 +1,5 @@
 import { redis } from './redis/redis.js'
-import { getIndexName, findDocuments, countDocuments, getDocument, getStatus } from './redisHelper.js'
+import { getIndexName, findDocuments, countDocuments, getDocument, getStatus, getVersion } from './redisHelper.js'
 
 /*
    main
@@ -65,6 +65,9 @@ console.log('docs =', docs)
 console.log(await getDocument(31))
 
 console.log(await getStatus())
+
+console.log('version =', await getVersion());
+
 
 await redis.close()
 

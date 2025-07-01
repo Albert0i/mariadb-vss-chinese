@@ -76,17 +76,18 @@ export async function findDocuments(query, limit = 5) {
  
  export async function getStatus() { 
    return { 
-      version: 'xxx',
-      documents: 100,
+      version: await getVersion(),
+      documents: await getDocumentsCount(),
       size: 13.1, 
-      visited: 10, 
-      results: [
-         { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
-         { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
-         { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
-         { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
-         { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
-       ]
+      visited: await getVisitedDocumentsCount(), 
+      // results: [
+      //    { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
+      //    { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
+      //    { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
+      //    { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
+      //    { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
+      //  ]
+      results: await getVisitedDocuments()
    };
  }
 
@@ -97,6 +98,58 @@ export async function findDocuments(query, limit = 5) {
    return await redis.hGetAll(getDocumentKeyName(id))
  }
 
+ /*
+    INFO SERVER
+ */
+ export async function getVersion() {
+   const serverInfo = await redis.sendCommand(['INFO', 'SERVER']);
+
+   const parsed = Object.fromEntries(
+      serverInfo
+        .split('\n')
+        .filter(line => line && !line.startsWith('#'))
+        .map(line => line.split(':'))
+    );
+    
+    return (parsed.redis_version); // e.g., "7.2.0" 
+ }
+
+ /*
+    FT.SEARCH fts:chinese:index * NOCONTENT LIMIT 0 0
+ */
+ export async function getDocumentsCount() {
+   const redisCommand = `FT.SEARCH ${getIndexName()} * NOCONTENT LIMIT 0 0`
+   
+   return await redis.sendCommand(redisCommand.split(' '))
+ }
+ /*
+    FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" NOCONTENT LIMIT 0 0
+ */
+ export async function getVisitedDocumentsCount() {
+   const redisCommand = [ 'FT.SEARCH', getIndexName(), '@visited:[(0 +inf]', 'NOCONTENT', 'LIMIT', '0', '0']
+
+    return await redis.sendCommand(redisCommand)
+ }
+ /*
+    FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" RETURN 3 id textChi visited LIMIT 0 100
+    process.env.MAX_RETURN
+ */ 
+ export async function getVisitedDocuments() {
+   // const redisCommand = [ 'FT.SEARCH', getIndexName(), '@visited:[(0 +inf]', 'RETURN', '3', 'id', 'textChi', 'visited', 'LIMIT', '0', process.env.MAX_RETURN]
+   // console.log(redisCommand)
+   // return await redis.sendCommand(redisCommand)
+   const searchResult =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
+      RETURN: ['id', 'textChi', 'visited'],
+      LIMIT: {
+          from: 0,
+          size: process.env.MAX_RETURN
+      }
+  });
+  
+  return searchResult.documents.map(doc => {
+   return doc.value
+  })
+ }
  /* 
     “Even the straightest road has its twist.”
     [
