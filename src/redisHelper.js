@@ -77,9 +77,9 @@ export async function findDocuments(query, limit = 5) {
  export async function getStatus() { 
    return { 
       version: await getVersion(),
-      documents: await getDocumentsCount(),
+      documents: await getDocumentsCount('*'),
       size: 13.1, 
-      visited: await getVisitedDocumentsCount(), 
+      visited: await getDocumentCount('@visited:[(0 +inf]'), 
       // results: [
       //    { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
       //    { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
@@ -87,7 +87,7 @@ export async function findDocuments(query, limit = 5) {
       //    { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
       //    { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
       //  ]
-      results: await getVisitedDocuments()
+      results: await findDocuments('@visited:[(0 +inf]')
    };
  }
 
@@ -117,27 +117,39 @@ export async function findDocuments(query, limit = 5) {
  /*
     FT.SEARCH fts:chinese:index * NOCONTENT LIMIT 0 0
  */
- export async function getDocumentsCount() {
-   const redisCommand = `FT.SEARCH ${getIndexName()} * NOCONTENT LIMIT 0 0`
+ export async function getDocumentsCount(query) {
+   // const redisCommand = `FT.SEARCH ${getIndexName()} * NOCONTENT LIMIT 0 0`
    
-   return await redis.sendCommand(redisCommand.split(' '))
+   // return await redis.sendCommand(redisCommand.split(' '))
+   const { total } =  await redis.ft.search(getIndexName(), query, {
+      NOCONTENT: true, 
+      LIMIT: {
+          from: 0,
+          size: 0
+      }
+  });
+
+  return total;
  }
  /*
     FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" NOCONTENT LIMIT 0 0
  */
- export async function getVisitedDocumentsCount() {
-   const redisCommand = [ 'FT.SEARCH', getIndexName(), '@visited:[(0 +inf]', 'NOCONTENT', 'LIMIT', '0', '0']
+//  export async function getVisitedDocumentsCount() {
+//    const { total } =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
+//       NOCONTENT: true, 
+//       LIMIT: {
+//           from: 0,
+//           size: 0
+//       }
+//   });
 
-    return await redis.sendCommand(redisCommand)
- }
+//   return total;
+//  }
  /*
     FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" RETURN 3 id textChi visited LIMIT 0 100
     process.env.MAX_RETURN
  */ 
  export async function getVisitedDocuments() {
-   // const redisCommand = [ 'FT.SEARCH', getIndexName(), '@visited:[(0 +inf]', 'RETURN', '3', 'id', 'textChi', 'visited', 'LIMIT', '0', process.env.MAX_RETURN]
-   // console.log(redisCommand)
-   // return await redis.sendCommand(redisCommand)
    const searchResult =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
       RETURN: ['id', 'textChi', 'visited'],
       LIMIT: {
@@ -146,10 +158,12 @@ export async function findDocuments(query, limit = 5) {
       }
   });
   
+  // { total, documents }
   return searchResult.documents.map(doc => {
    return doc.value
   })
  }
+ 
  /* 
     “Even the straightest road has its twist.”
     [
