@@ -1,4 +1,5 @@
 import { redis } from './redis/redis.js'
+import { getIndexName, getDocumentKeyName, checkIndex, createIndex } from './redisHelper.js'
 import { documents } from '../data/documents.js'
 
 await redis.connect()
@@ -10,12 +11,19 @@ await redis.connect()
 /*
    main 
 */
+if ( await checkIndex() ) {
+    console.log(`Found index ${getIndexName()}, skip creation...`)
+} else {
+    console.log(`Creating index ${getIndexName()}...`)
+    console.log(await createIndex()) 
+}
+
 let promises = [];
 for (let i = 0; i < documents.length; i++) {
     const now = new Date(); 
     const isoDate = now.toISOString(); 
     
-    promises.push(redis.hSet(`fts:chinese:document:${i + 1}`, {
+    promises.push(redis.hSet(getDocumentKeyName(i + 1), {
         id: i + 1, 
         textChi: documents[i],        
         visited:   0, 
@@ -25,7 +33,7 @@ for (let i = 0; i < documents.length; i++) {
     } ) )
 }
 await Promise.all(promises)
-console.log('Done!')
+console.log('Seeding finished!')
 
 await redis.close()
 /*

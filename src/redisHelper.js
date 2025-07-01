@@ -3,16 +3,34 @@
 */
 import { redis } from './redis/redis.js '
 
-export function getDocumentKey(id) {
-    return 'fts:chinese:documents:${id}'
-}
-
 export function getIndexName() {
-    return 'fts:chinese:index';
+   return 'fts:chinese:index';
 }
 
-export async function findDocuments(indexName, query, limit = 5) {
-    //await redis.connect()
+export function getDocumentKeyName(id) {
+    return `fts:chinese:documents:${id}`
+}
+
+export async function checkIndex() {
+   const redisCommand = `FT.INFO ${getIndexName()}`
+   
+   try {      
+      await redis.sendCommand(redisCommand.split(' '))
+      return true;
+   } catch (err) {
+      // "Unknown Index name"
+      return false; 
+   } 
+}
+
+export async function createIndex() {
+   const redisCommand = `FT.CREATE ${getIndexName()} ON HASH PREFIX 1 ${getDocumentKeyName('')} LANGUAGE chinese SCHEMA id NUMERIC SORTABLE textChi TEXT WEIGHT 1.0 SORTABLE visited NUMERIC SORTABLE createdAt TAG SORTABLE updatedAt TAG SORTABLE updateIdent NUMERIC SORTABLE`
+
+   return await redis.sendCommand(redisCommand.split(' '))
+}
+
+export async function findDocuments(query, limit = 5) {
+    const indexName = getIndexName()
 
     // Find documents 
     const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
@@ -33,8 +51,8 @@ export async function findDocuments(indexName, query, limit = 5) {
     return docs
  }
  
- export async function countDocuments(indexName, query) { 
-    //await redis.connect()
+ export async function countDocuments(query) { 
+   const indexName = getIndexName()
 
     // Count documents 
     // { total: 5, documents: [] }

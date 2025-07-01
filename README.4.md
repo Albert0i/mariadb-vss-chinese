@@ -16,6 +16,29 @@ To consummate our story of Fulltext Search, we pull in our old friend... Redis i
 > When adding Chinese language documents, set LANGUAGE chinese for the indexer to properly tokenize the terms. If you use the default language, then search terms are extracted based on punctuation characters and whitespace. The Chinese language tokenizer makes use of a segmentation algorithm (via [Friso](https://github.com/lionsoul2014/friso)), which segments text and checks it against a predefined dictionary. See [Stemming](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/stemming/) for more information.
 
 
+
+
+#### I. FT.CREATE (TL;DR)
+
+#### II. FT.SEARCH (TL;DR)
+
+#### III. Dual interfaces 
+
+#### IV. Seeding 
+
+#### V. Querying 
+
+#### VI. Bonus 
+1. List of articles 
+2. Box of Pandora
+
+#### VII. Bibliograhy 
+
+[Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
+
+“Even the straightest road has its twist.”
+
+
 #### I. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/), [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) and [FT.AGGREGATE](https://redis.io/docs/latest/commands/ft.aggregate/) (TL;DR)
 
 
