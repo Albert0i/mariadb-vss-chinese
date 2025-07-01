@@ -4,7 +4,9 @@ import { findSimilarDocuments, addDocument } from '../embedder.js';
 
 import { getStatus, getDocument, findDocuments, countDocuments } from '../mariadbHelper.js'
 import { countDocuments as countDocumentsRedis, 
-         findDocuments as findDocumentsRedis } from '../redisHelper.js'
+         findDocuments as findDocumentsRedis,
+         getStatus as getStatusRedis,
+         getDocument as getDocumentRedis } from '../redisHelper.js'
 
 const router = express.Router();
 
@@ -90,9 +92,16 @@ router.get('/ftcheckredis', async (req, res) => {
   res.status(200).json({ success: true, count })
 })
 
-// GET /api/v1/stats
+// GET /api/v1/statsredis
 router.get('/statsredis', async (req, res) => {
-  res.status(200).json(await getStatus())
+  res.status(200).json(await getStatusRedis())
+});
+
+// GET /api/v1/detailsredis?id=xxx
+router.get('/detailsredis', async (req, res) => {
+  const id = parseInt(req.query.id, 10);
+
+  res.status(200).json(await getDocumentRedis(id))
 });
 
 export default router;

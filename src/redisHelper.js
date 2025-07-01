@@ -41,13 +41,10 @@ export async function findDocuments(query, limit = 5) {
     // Update `visited` field
     const promises = [];    // Collect promises 
     docs.forEach(doc => { 
-          const docKey = getDocumentKeyName(doc.id)
-          const now = new Date(); 
-          const isoDate = now.toISOString(); 
+         const docKey = getDocumentKeyName(doc.id)
+         const now = new Date(); 
+         const isoDate = now.toISOString(); 
 
-         //  promises.push((redis.hIncrBy(docKey, 'visited', 1)))
-         //  promises.push(redis.hSet(docKey, 'updatedAt', isoDate))
-         //  promises.push((redis.hIncrBy(docKey, 'updateIdent', 1)))
          promises.push( 
                         redis.multi()
                         .hIncrBy(docKey, 'visited', 1)
@@ -77,6 +74,29 @@ export async function findDocuments(query, limit = 5) {
    return total
  }
  
+ export async function getStatus() { 
+   return { 
+      version: 'xxx',
+      documents: 100,
+      size: 13.1, 
+      visited: 10, 
+      results: [
+         { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
+         { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
+         { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
+         { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
+         { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
+       ]
+   };
+ }
+
+ export async function getDocument(id) { 
+   /*
+      HGETALL fts:chinese:documents:31
+   */
+   return await redis.hGetAll(getDocumentKeyName(id))
+ }
+
  /* 
     “Even the straightest road has its twist.”
     [

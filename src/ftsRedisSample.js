@@ -1,5 +1,5 @@
 import { redis } from './redis/redis.js'
-import { getIndexName, findDocuments, countDocuments } from './redisHelper.js'
+import { getIndexName, findDocuments, countDocuments, getDocument, getStatus } from './redisHelper.js'
 
 /*
    main
@@ -61,6 +61,10 @@ console.log('count = ', count)
 
 const docs = await findDocuments(query)
 console.log('docs =', docs)
+
+console.log(await getDocument(31))
+
+console.log(await getStatus())
 
 await redis.close()
 

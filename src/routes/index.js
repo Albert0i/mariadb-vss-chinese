@@ -115,6 +115,24 @@ router.post('/ftsredis', async (req, res) => {
   res.render('ftsredis', { query, results } );
 });
 
+// Stats page
+router.get('/statsredis', async (req, res) => {
+  const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/statsredis`);
+  const stats = await response.json();
+  
+  res.render('statsredis', { stats });
+});
+
+// Details page
+router.get('/detailsredis/:id', async (req, res) => {
+  const id = req.params.id;
+
+  const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/detailsredis?id=${id}`);
+  const record = await response.json();
+
+  res.render('detailsredis', { record });
+});
+
 export default router;
 
 /*
