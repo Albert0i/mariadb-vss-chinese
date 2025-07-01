@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import router from './routes/index.js';
 import apiRouter from './routes/api.js';
 import { handle404 } from './middleware/handle404.js'
+import { redis } from './redis/redis.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,8 +34,16 @@ app.use(handle404);
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 3000;
 
+await redis.connect()
 app.listen(PORT, () => {
         console.log(`Server running at http://${HOST}:${PORT}`)
     } ).on('error', (error) => {
         throw new Error(error.message)
     } );
+
+process.on('SIGINT', async () => {
+    await redis.close()
+    console.log('🛑 Caught Ctrl+C (SIGINT). Cleaning up...');
+    // Perform cleanup here (e.g., close DB, stop server)
+    process.exit(0); // Exit gracefully
+});

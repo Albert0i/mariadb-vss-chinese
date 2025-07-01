@@ -23,7 +23,7 @@
           <p class="text-gray-800 text-base mb-1">💬 <%= item.textChi %></p>
           <p class="text-sm text-gray-500">
             🆔 <a href="/details/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a> |
-            分數: <%= item.score.toFixed(5) %>
+            分數: <%= Number(item.score).toFixed(5) %>
           </p>
         </div>
       <% }); %>
@@ -54,9 +54,6 @@
     });
 
     async function checkFT(query) {
-      // const mode = document.querySelector('input[name="mode"]:checked')?.value;
-      // const expand = expandCheckbox.checked ? 'on':undefined;
-
       fetch(`/api/v1/ftcheckredis?query=${encodeURIComponent(query.value)}`)
           .then(res => res.json())
           .then(data => {

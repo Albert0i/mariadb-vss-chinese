@@ -128,3 +128,31 @@ export async function countDocuments(query, mode, expand) {
     and you're injecting raw SQL features. Be sure to properly sanitize any dynamic input 
     if you interpolate it—although using placeholders like ? here is already good practice.
 */
+/*
+-- Natural mode 
+SELECT textChi, 
+		 MATCH(textChiSeg) AGAINST('太陽' ) AS distance, 
+		 id 
+FROM documents
+HAVING distance > 0
+ORDER BY distance DESC
+LIMIT 10 OFFSET 0 
+
+-- Natural mode with query expansion
+SELECT textChi, 
+		 MATCH(textChiSeg) AGAINST('太陽' WITH QUERY EXPANSION) AS distance, 
+		 id 
+FROM documents
+HAVING distance > 0
+ORDER BY distance DESC
+LIMIT 10 OFFSET 0 
+
+-- Boolean mode 
+SELECT textChi, 
+		 MATCH(textChiSeg) AGAINST('+太陽 +東' IN BOOLEAN MODE) AS distance, 
+		 id 
+FROM documents
+HAVING distance > 0
+ORDER BY distance DESC
+LIMIT 10 OFFSET 0 
+*/
