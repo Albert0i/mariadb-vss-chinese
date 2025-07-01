@@ -79,15 +79,15 @@ export async function findDocuments(query, limit = 5) {
       version: await getVersion(),
       documents: await getDocumentsCount('*'),
       size: 13.1, 
-      visited: await getDocumentCount('@visited:[(0 +inf]'), 
-      // results: [
-      //    { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
-      //    { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
-      //    { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
-      //    { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
-      //    { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
-      //  ]
-      results: await findDocuments('@visited:[(0 +inf]')
+      visited: await getDocumentsCount('@visited:[(0 +inf]'), 
+      results: [
+         { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
+         { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
+         { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
+         { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
+         { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
+       ]
+      // results: await findDocuments('@visited:[(0 +inf]')
    };
  }
 
