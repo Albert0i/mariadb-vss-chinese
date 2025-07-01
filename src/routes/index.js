@@ -105,14 +105,15 @@ router.get('/ftsredis', (req, res) => {
 // Fulltext Search page - POST (handle query & render results)
 router.post('/ftsredis', async (req, res) => {
   const { query } = req.body;
-  console.log('query =', query)
+  console.log('index query =', query)
   const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/ftsredis`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query })
   });
+  console.log('response =', response)
   const results = await response.json();
-  console.log('results =', results)
+  //console.log('results =', results)
   res.render('ftsredis', { query, results } );
 });
 

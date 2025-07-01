@@ -33,9 +33,12 @@ export async function createIndex() {
 export async function findDocuments(query, limit = 5) {
     const indexName = getIndexName()
 
+    console.log('find query =', query)
     // Find documents 
-    const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
+    const redisCommand = `FT.SEARCH ${indexName} ${query.trim()} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
+    console.log('redisCommand =', redisCommand)
     const searchResults = await redis.sendCommand(redisCommand.split(' '));
+    console.log('find searchResults =', searchResults)
     const docs = twist(searchResults)
  
     // Update `visited` field
@@ -57,7 +60,7 @@ export async function findDocuments(query, limit = 5) {
 
     // Count documents 
     // { total: 5, documents: [] }
-    const { total } = await redis.ft.search(indexName, query, {
+    const { total } = await redis.ft.search(indexName, query.trim(), {
        NOCONTENT: true,
        LIMIT: {
           from: 0, // Offset
@@ -101,6 +104,7 @@ export function twist(inputArray) {
     let outputArray = []
     let obj = {}
     
+    console.log('inputArray =', inputArray)
     for (let i = 1; i < inputArray.length; i += 3) {
        const values = inputArray[i + 2]
        for (let j=0; j < values.length; j +=2) {
@@ -111,7 +115,7 @@ export function twist(inputArray) {
        outputArray.push(obj)
        obj = {}
     }
- 
+    console.log('outputArray =', outputArray)
     return outputArray
  }
 /*

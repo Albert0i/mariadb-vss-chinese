@@ -6,7 +6,7 @@ import { getIndexName, findDocuments, countDocuments } from './redisHelper.js'
 */
 await redis.connect()
 const indexName = getIndexName()
-const query = '@textChi:夏天'; // Custom query
+const query = '@textChi:白天'; // Custom query
 /*
    Interface one 
 */

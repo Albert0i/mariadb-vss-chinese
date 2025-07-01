@@ -36,7 +36,7 @@ const PORT = process.env.PORT || 3000;
 
 await redis.connect()
 app.listen(PORT, () => {
-        console.log(`Server running at http://${HOST}:${PORT}`)
+        console.log(`🔷 [🚀] Server running at 🌍 http://${HOST}:${PORT} 🔷`);
     } ).on('error', (error) => {
         throw new Error(error.message)
     } );
