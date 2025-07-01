@@ -98,12 +98,12 @@ router.post('/ftsearch', async (req, res) => {
    Redis
 */
 // Fulltext Search page - GET (initial form) 
-router.get('/ftsearchredis', (req, res) => {
-  res.render('ftsearchredis', { query: '', mode: 'natural', expand: '', results: [] } );
+router.get('/ftsredis', (req, res) => {
+  res.render('ftsredis', { query: '', mode: 'natural', expand: '', results: [] } );
 });
 
 // Fulltext Search page - POST (handle query & render results)
-router.post('/ftsearchredis', async (req, res) => {
+router.post('/ftsredis', async (req, res) => {
   const { query, mode, expand } = req.body;
   
   const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/ftsearchredis`, {

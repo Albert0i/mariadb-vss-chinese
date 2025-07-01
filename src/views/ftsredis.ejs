@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全文搜尋</title>
+  <link rel="stylesheet" href="/css/tailwind.css" />
+</head>
+<body class="bg-white px-4 py-12 flex flex-col items-center min-h-screen">
+  <h1 class="text-3xl font-semibold text-gray-800 mb-8">全文搜尋 (Redis)</h1>
+
+  <form method="POST" action="/ftsredis" class="w-full max-w-md space-y-4">
+    <input name="query" value="<%= query %>" placeholder="輸入搜尋詞…" class="w-full border rounded px-4 py-2" autofocus required  maxlength="512"/>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">提交</button>
+  </form>
+
+  <% if (results.length > 0) { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full max-w-6xl mt-10 px-2">
+      <% results.forEach(item => { %>
+        <div class="bg-gray-100 rounded p-4 shadow text-left">
+          <p class="text-gray-800 text-base mb-1">💬 <%= item.textChi %></p>
+          <p class="text-sm text-gray-500">
+            🆔 <a href="/details/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a> |
+            分數: <%= item.distance.toFixed(5) %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+
+  <a href="/" class="mt-10 text-blue-500 hover:underline">← 回首頁</a>
+</body>
+</html>

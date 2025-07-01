@@ -75,18 +75,18 @@ export async function getDocument(id) {
 }
 
 /*
-   Fulltext Search 
+   Fulltext Search Support
 */
 export async function findDocuments(query, mode, expand, limit = 5) {
     // Find documents 
     const sqlStmt = ` SELECT textChi,
                              MATCH(textChiSeg) AGAINST (? 
                                    ${ mode==='boolean' ? 'IN BOOLEAN MODE': '' }
-                                   ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } ) AS distance,
+                                   ${ expand==='on' ? 'WITH QUERY EXPANSION': '' } ) AS score,
                              id
                       FROM documents
-                      HAVING distance > 0
-                      ORDER BY distance DESC
+                      HAVING score > 0
+                      ORDER BY score DESC
                       LIMIT ${limit} OFFSET 0
                     `
     const docs = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);

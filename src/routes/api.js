@@ -51,7 +51,7 @@ router.get('/details', async (req, res) => {
 });
 
 /*
-   Fulltext Search Support (MariaDB)
+   Fulltext Search (MariaDB)
 */
 // POST /api/v1/ftsearch
 router.post('/ftsearch', async (req, res) => {
@@ -70,7 +70,7 @@ router.get('/ftcheck', async (req, res) => {
 });
 
 /*
-   Fulltext Search Support (Redis)
+   Fulltext Search (Redis)
 */
 // POST /api/v1/ftsearchredis
 router.post('/ftsearchredis', async (req, res) => {  
@@ -92,58 +92,6 @@ router.get('/ftcheckredis', async (req, res) => {
 router.get('/statsredis', async (req, res) => {
   res.status(200).json(await getStatus())
 });
-
-// async function findDocumentsRedis(indexName, query, limit = 5) {
-//   // Find documents 
-//   const redisCommand = `FT.SEARCH ${indexName} ${query} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
-//   const searchResults = await redis.sendCommand(redisCommand.split(' '));
-//   const docs = twist(searchResults)
-
-//   // Update `visited` field
-//   const promises = [];    // Collect promises 
-//   docs.forEach(doc => { 
-//         const now = new Date(); 
-//         const isoDate = now.toISOString();   
-//         promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'visited', 1)))
-//         promises.push(redis.hSet(`fts:chinese:document:${doc.id}`, 'updatedAt', isoDate))
-//         promises.push((redis.hIncrBy(`fts:chinese:document:${doc.id}`, 'updateIdent', 1)))
-//       })
-//   await Promise.all(promises); // Resolve all at once
-  
-//   return docs
-// }
-
-// async function countDocumentsRedis(indexName, query) { 
-//   // Count documents 
-//   // { total: 5, documents: [] }
-//   const { total } = await redis.ft.search(indexName, query, {
-//      NOCONTENT: true,
-//      LIMIT: {
-//         from: 0, // Offset
-//         size: 0  // Number of results to return
-//      }
-//  }); 
-
-//  return total
-// }
-
-// function twist(inputArray) {
-//   let outputArray = []
-//   let obj = {}
-  
-//   for (let i = 1; i < inputArray.length; i += 3) {
-//      const values = inputArray[i + 2]
-//      for (let j=0; j < values.length; j +=2) {
-//         obj[values[j]] = values[j+1]
-//      }
-//      obj.score = inputArray[i+1]
-
-//      outputArray.push(obj)
-//      obj = {}
-//   }
-
-//   return outputArray
-// }
 
 export default router;
 
