@@ -48,6 +48,7 @@ FT.SEARCH index query
 ```
 
 **index**
+
 is index name. You must first create the index using FT.CREATE.
 
 query
