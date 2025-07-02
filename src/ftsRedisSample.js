@@ -1,10 +1,11 @@
 import { redis } from './redis/redis.js'
-import { getIndexName, findDocuments, countDocuments, getDocument, getStatus, getVersion } from './redisHelper.js'
+import { getIndexName, findDocuments, countDocuments, getDocument, getStatus, getVersion, checkIndex  } from './redisHelper.js'
 
 /*
    main
 */
 await redis.connect()
+
 const indexName = getIndexName()
 const query = '@textChi:夏天'; // Custom query
 /*
@@ -56,18 +57,17 @@ for (let i = 1; i < secondSearchResults.length; i += 3) {
 /*
    Testing 
 */
-const count = await countDocuments(query)
-console.log('count = ', count)
+// const count = await countDocuments(query)
+// console.log('count = ', count)
 
-const docs = await findDocuments(query)
-console.log('docs =', docs)
+// const docs = await findDocuments(query)
+// console.log('docs =', docs)
 
-console.log(await getDocument(31))
+// console.log(await getDocument(31))
 
-console.log(await getStatus())
+// console.log(await getStatus())
 
-console.log('version =', await getVersion());
-
+// console.log('version =', await getVersion());
 
 await redis.close()
 

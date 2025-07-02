@@ -19,15 +19,9 @@ export function getDocumentKeyName(id) {
    Index management 
 */
 export async function checkIndex() {
-   const redisCommand = `FT.INFO ${getIndexName()}`
-   
-   try {      
-      await redis.sendCommand(redisCommand.split(' '))
-      return true;
-   } catch (err) {
-      // "Unknown Index name"
-      return false; 
-   } 
+   const indexList = await redis.ft._list()
+
+   return indexList.includes(getIndexName())
 }
 
 export async function createIndex() {
