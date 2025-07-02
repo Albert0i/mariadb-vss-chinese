@@ -242,7 +242,6 @@ MODULE list
 {
     "id": 1,
     "textChi":     "今天的天空晴朗且蔚藍", 
-    "textChiSeg":  "今天 天空 晴朗 且 蔚藍", 
     "visited":     0, 
     "createdAt":   "2025-06-30T01:22:46.562Z", 
     "updatedAt":   "", 
