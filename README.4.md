@@ -301,7 +301,7 @@ FT.CREATE people_idx ON HASH
 
 
 #### III. Dual interfaces 
-As far as querying is concerned, we can use two interfaces: 
+As far as querying is concerned, there are two interfaces: 
 
 ##### 1. `redis.ft.search(index, query, options)`
 This is a **high-level API method** provided by Redis client libraries (like `node-redis` or `ioredis`) to execute the RediSearch `FT.SEARCH` command. It allows you to query a full-text index with structured options, without manually formatting the raw Redis command.
