@@ -172,13 +172,15 @@ FT.SEARCH index query
 | `PARAMS num name value ...` | Pass named parameters for dynamic queries. |
 | `DIALECT version` | Use advanced query syntax (e.g., `DIALECT 2` for vector search). |
 
-##### 7. Example 1: Basic Full-Text Search
+##### 7. Examples
+
+- Example 1: Basic Full-Text Search
 ```bash
 FT.SEARCH booksIdx "redis search engine"
 ```
 Searches for documents containing all three terms.
 
-##### 8. Example 2: Field-Specific + Sorting + Pagination
+- Example 2: Field-Specific + Sorting + Pagination
 ```bash
 FT.SEARCH booksIdx "@genre:{sci-fi} @author:Asimov"
   SORTBY published DESC 
@@ -187,7 +189,7 @@ FT.SEARCH booksIdx "@genre:{sci-fi} @author:Asimov"
 ```
 Finds sci-fi books by Asimov, sorted by publish date, returning top 5 with selected fields.
 
-##### 9. Example 3: Highlighting and Summarization
+- Example 3: Highlighting and Summarization
 ```bash
 FT.SEARCH booksIdx "quantum computing"
   HIGHLIGHT FIELDS 1 description TAGS <em> </em>
@@ -195,7 +197,7 @@ FT.SEARCH booksIdx "quantum computing"
 ```
 Returns snippets from the `description` field with highlighted terms.
 
-##### 10. Example 4: Hybrid Vector + Text Search
+- Example 4: Hybrid Vector + Text Search
 ```bash
 FT.SEARCH myIdx "*"
   PARAMS 2 vec_blob $blob
@@ -203,7 +205,7 @@ FT.SEARCH myIdx "*"
 ```
 Performs a vector similarity search using a binary blob and RediSearch dialect 2.
 
-##### 11. Notes & Best Practices
+##### 8. Notes & Best Practices
 
 - **Stemming and stopwords** are language-dependent; configure via `FT.CREATE`.
 - **Performance**: Use `NOCONTENT`, `RETURN`, and `LIMIT` to reduce payload.
