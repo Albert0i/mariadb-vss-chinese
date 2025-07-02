@@ -23,8 +23,13 @@
         <div class="bg-gray-100 rounded p-4 shadow text-left">
           <p class="text-gray-800 text-base mb-1">💬 <%= item.textChi %></p>
           <p class="text-sm text-gray-500">
-            🆔 <a href="/details/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a> |
-            👁️‍🗨️ Visited: <%= item.visited %>
+            🆔 
+            <% if (stats.version.includes("Redis"))  { %>
+              <a href="/detailsredis/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a>
+            <% } else  { %> 
+              <a href="/details/<%= item.id %>" class="text-blue-500 hover:underline"><%= item.id %></a>
+            <% } %>            
+            | 👁️‍🗨️ Visited: <%= item.visited %>
           </p>
         </div>
       <% }); %>
