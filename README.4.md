@@ -476,6 +476,48 @@ await redis.sendCommand([
 
 
 #### IV. Seeding 
+`seedRedis.js`
+```
+import { redis } from './redis/redis.js'
+import { getIndexName, getDocumentKeyName, checkIndex, createIndex } from './redisHelper.js'
+import { documents } from '../data/documents.js'
+
+await redis.connect()
+/*
+    Flush all data     
+*/
+await redis.flushDb()
+
+/*
+   main 
+*/
+if ( await checkIndex() ) {
+    console.log(`Found index ${getIndexName()}, skip creation...`)
+} else {
+    console.log(`Creating index ${getIndexName()}...`)
+    console.log(await createIndex()) 
+}
+
+let promises = [];
+for (let i = 0; i < documents.length; i++) {
+    const now = new Date(); 
+    const isoDate = now.toISOString(); 
+    
+    promises.push(redis.hSet(getDocumentKeyName(i + 1), {
+        id: i + 1, 
+        textChi: documents[i],        
+        visited:   0, 
+        createdAt: isoDate, 
+        updatedAt: "", 
+        updateIdent: 0
+    } ) )
+}
+await Promise.all(promises)
+console.log('Seeding finished!')
+
+await redis.close()
+```
+
 
 #### V. Querying 
 
