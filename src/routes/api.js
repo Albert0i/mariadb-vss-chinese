@@ -16,7 +16,7 @@ const router = express.Router();
 // POST /api/v1/search
 router.post('/search', async (req, res) => {
   const { query } = req.body;
-  const results = await findSimilarDocuments(query, process.env.MAX_FIND)  
+  const results = await findSimilarDocuments(query, process.env.MAX_FIND_RETURN)  
 
   res.status(200).json(results)
 });
@@ -60,7 +60,7 @@ router.get('/details', async (req, res) => {
 // POST /api/v1/ftsearch
 router.post('/ftsearch', async (req, res) => {
   const { query, mode, expand } = req.body;
-  const results = await findDocuments(query, mode, expand, process.env.MAX_FIND)
+  const results = await findDocuments(query, mode, expand, process.env.MAX_FIND_RETURN)
   
   res.status(200).json(results)
 });
@@ -79,7 +79,7 @@ router.get('/ftcheck', async (req, res) => {
 // POST /api/v1/ftsredis
 router.post('/ftsredis', async (req, res) => {  
   const { query } = req.body;
-  const results = await findDocumentsRedis(query, process.env.MAX_FIND)
+  const results = await findDocumentsRedis(query, 0, process.env.MAX_FIND_RETURN)
   
   res.status(200).json(results)
 })

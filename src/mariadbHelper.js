@@ -1,5 +1,5 @@
 /* 
-   MariaDB Helper Functins 
+   MariaDB Helper Functions 
 */
 import 'dotenv/config'
 import { PrismaClient } from './generated/prisma/index.js'; 
@@ -42,7 +42,7 @@ export async function getStatus() {
         { updatedAt: 'desc' }
       ],
       skip: 0, 
-      take: parseInt(process.env.MAX_RETURN, 10)
+      take: parseInt(process.env.MAX_STATS_RETURN, 10)
     })
     return { 
                 version,

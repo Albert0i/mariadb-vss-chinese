@@ -1,5 +1,5 @@
 /* 
-   Redis Helper Functins 
+   Redis Helper Functions 
 */
 import 'dotenv/config'
 import { redis } from './redis/redis.js '
@@ -39,12 +39,12 @@ export async function createIndex() {
 /*
    Documents management 
 */
-export async function findDocuments(query, limit = 5) {
+export async function findDocuments(query, offset=0, limit = 10) {
     const indexName = getIndexName()
+    const redisCommand = [ 'FT.SEARCH', indexName, query.trim(), 'WITHSCORES', 'RETURN', '2', 'textChi', 'id', 'LIMIT', offset.toString(), limit.toString() ]
 
     // Find documents 
-    const redisCommand = `FT.SEARCH ${indexName} ${query.trim()} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
-    const searchResults = await redis.sendCommand(redisCommand.split(' '));
+    const searchResults = await redis.sendCommand(redisCommand);
     // “Even the straightest road has its twist.”
     const docs = twist(searchResults)
  
@@ -55,6 +55,7 @@ export async function findDocuments(query, limit = 5) {
          const now = new Date(); 
          const isoDate = now.toISOString(); 
 
+         // Use transaction
          promises.push( 
                         redis.multi()
                         .hIncrBy(docKey, 'visited', 1)
@@ -68,7 +69,7 @@ export async function findDocuments(query, limit = 5) {
     return docs
  }
  
- export async function countDocuments(query) { 
+ export async function countDocuments(query='*') { 
    const indexName = getIndexName()
     // Count documents 
     // { total: n, documents: [value, ...] }
@@ -84,20 +85,15 @@ export async function findDocuments(query, limit = 5) {
  }
  
  export async function getStatus() { 
+   const query = '@visited:[(0 +inf]'
+
    return { 
       version: await getVersion(),
       model: 'N/A',
-      documents: await countDocuments('*'),
+      documents: await countDocuments(),
       size: 13.1, 
-      visited: await countDocuments('@visited:[(0 +inf]'), 
-      // results: [
-      //    { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
-      //    { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
-      //    { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
-      //    { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
-      //    { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
-      //  ]
-      results: await getDocuments('@visited:[(0 +inf]')
+      visited: await countDocuments(query), 
+      results: await getDocuments(query, 0, process.env.MAX_STATS_RETURN)
    };
  }
 
@@ -124,58 +120,16 @@ export async function findDocuments(query, limit = 5) {
     return `Redis ${parsed.redis_version}`; // e.g., "7.2.0" 
  }
 
- /*
-    FT.SEARCH fts:chinese:index * NOCONTENT LIMIT 0 0
- */
-//  export async function getDocumentsCount(query) {
-//    // const redisCommand = `FT.SEARCH ${getIndexName()} * NOCONTENT LIMIT 0 0`
-   
-//    // return await redis.sendCommand(redisCommand.split(' '))
-//    const { total } =  await redis.ft.search(getIndexName(), query, {
-//       NOCONTENT: true, 
-//       LIMIT: {
-//           from: 0,
-//           size: 0
-//       }
-//   });
-
-//   return total;
-//  }
- /*
-    FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" NOCONTENT LIMIT 0 0
- */
-//  export async function getVisitedDocumentsCount() {
-//    const { total } =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
-//       NOCONTENT: true, 
-//       LIMIT: {
-//           from: 0,
-//           size: 0
-//       }
-//   });
-
-//   return total;
-//  }
- /*
-    FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" RETURN 3 id textChi visited LIMIT 0 100
-    process.env.MAX_RETURN
- */ 
- export async function getDocuments(query) {
+ export async function getDocuments(query, offset=0, limit = 10) {
    const searchResult =  await redis.ft.search(getIndexName(), query, {
       RETURN: ['id', 'textChi', 'visited'],
       LIMIT: {
-          from: 0,
-          size: process.env.MAX_RETURN
+          from: offset,
+          size: limit
       }
   });
-//    const searchResult =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
-//       RETURN: ['id', 'textChi', 'visited'],
-//       LIMIT: {
-//           from: 0,
-//           size: process.env.MAX_RETURN
-//       }
-//   });
   
-  // { total, documents }
+   // { total: n, documents: [value, ...] }
   return searchResult.documents.map(doc => {
    return doc.value
   })
@@ -250,3 +204,9 @@ FT.SEARCH fts:chinese:index "@textChi:夏天" NOCONTENT
 /*
    In the output of the FT.SEARCH command with the WITHSCORES option, the scores are the floating-point numbers that appear immediately after the document fields. Each document's score is displayed right after its fields.
 */
+ /*
+    FT.SEARCH fts:chinese:index * NOCONTENT LIMIT 0 0
+    FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" NOCONTENT LIMIT 0 0
+    FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" RETURN 3 id textChi visited LIMIT 0 100
+    process.env.MAX_RETURN
+ */ 
