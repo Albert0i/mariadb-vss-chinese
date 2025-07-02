@@ -301,6 +301,12 @@ FT.CREATE people_idx ON HASH
 
 
 #### III. Dual interfaces 
+```
+redis.ft.search(index, query, option)
+```
+```
+redis.sendCommand([...])
+```
 
 #### IV. Seeding 
 
@@ -312,10 +318,10 @@ FT.CREATE people_idx ON HASH
 
 
 #### VII. Bibliograhy 
-1. []()
-2. []()
-3. []()
-4. []()
+1. [Redis Query Engine](https://redis.io/docs/latest/develop/ai/search-and-query/)
+2. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/)
+3. [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/)
+4. [Node-Redis](https://www.npmjs.com/package/redis)
 5. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
 [Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
