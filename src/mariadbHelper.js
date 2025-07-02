@@ -77,7 +77,7 @@ export async function getDocument(id) {
 /*
    Fulltext Search Support
 */
-export async function findDocuments(query, mode, expand, limit = 5) {
+export async function findDocuments(query, mode, expand, offset=0, limit = 10) {
     // Find documents 
     const sqlStmt = ` SELECT textChi,
                              MATCH(textChiSeg) AGAINST (? 
@@ -87,7 +87,7 @@ export async function findDocuments(query, mode, expand, limit = 5) {
                       FROM documents
                       HAVING score > 0
                       ORDER BY score DESC
-                      LIMIT ${limit} OFFSET 0
+                      LIMIT ${limit} OFFSET ${offset}
                     `
     const docs = await prisma.$queryRawUnsafe(`${sqlStmt}`, query);
 
