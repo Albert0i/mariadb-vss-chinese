@@ -214,17 +214,10 @@ Performs a vector similarity search using a binary blob and RediSearch dialect 2
 
 
 #### III. Building the index 
-To check if your Redis installation support searching capability with: 
-```
-INFO modules
-```
-Or 
-```
-MODULE list
-```
-
+First, check to see if your Redis installation has search capability with either `INFO modules` or `MODULE list`. 
 ![alt ](img/rediSearch.JPG)
 
+Redis Query Engine supports Fulltext Search in Chinese out of the box! 
 > [Chinese support](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/chinese/) allows Chinese documents to be added and tokenized using segmentation rather than simple tokenization using whitespace and/or punctuation.
 
 > Indexing a Chinese document is different than indexing a document in most other languages because of how tokens are extracted. While most languages can have their tokens distinguished by separation characters and whitespace, this is not common in Chinese.
@@ -233,11 +226,19 @@ MODULE list
 
 > Redis makes use of the [Friso](https://github.com/lionsoul2014/friso) Chinese tokenization library for this purpose. This is largely transparent to the user and often no additional configuration is required.
 
+According to [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) documentation: 
+**LANGUAGE_FIELD {lang_attribute}**
+> is a document attribute set as the document language.
+
 > A stemmer is used for the supplied language during indexing. If an unsupported language is sent, the command returns an error. The supported languages are Arabic, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, Greek, Hungarian, Indonesian, Irish, Italian, Lithuanian, Nepali, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Tamil, Turkish, and Chinese.
 
 > When adding Chinese language documents, set LANGUAGE chinese for the indexer to properly tokenize the terms. If you use the default language, then search terms are extracted based on punctuation characters and whitespace. The Chinese language tokenizer makes use of a segmentation algorithm (via [Friso](https://github.com/lionsoul2014/friso)), which segments text and checks it against a predefined dictionary. See [Stemming](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/stemming/) for more information.
 
+According to [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) documentation: 
+**LANGUAGE_FIELD {lang_attribute}**
+use a stemmer for the supplied language during search for query expansion. If querying documents in Chinese, set to chinese to properly tokenize the query terms. Defaults to English. If an unsupported language is sent, the command returns an error. See F[T.CREATE](https://redis.io/docs/latest/commands/ft.create/) for the list of languages. If LANGUAGE was specified as part of index creation, it doesn't need to specified with FT.SEARCH.
 
+Instead of crafting `FT.CREATE` command from scratch, a small utility [FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html) may give you a hand. To envisage the data model in JSON format, for example: 
 ```
 {
     "id": 1,
@@ -248,8 +249,11 @@ MODULE list
     "updateIdent": 0
 }
 ```
+
+Paste it in, answer a couple of questions and press `generate`: 
 ![alt FT.CREATE Helper](img/FT_CREATE_helper.JPG)
 
+Slightly modify and beautify as needed: 
 ```
 FT.CREATE fts:chinese:index 
     ON HASH PREFIX 1 fts:chinese:document: LANGUAGE chinese 
@@ -261,11 +265,30 @@ FT.CREATE fts:chinese:index
     updatedAt TAG SORTABLE 
     updateIdent NUMERIC SORTABLE 
 ```
+**Caveat**
 
-This use [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) to create a Fulltext index for HASH data structures. 
-
-[FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html)
-
+1. `LANGUAGE chinese` is added as needed; 
+2. Only fields to be searched should be indexed; 
+3. Index can be built on a subset of data:
+```
+FT.CREATE idx_name ON HASH 
+  PREFIX 1 doc: 
+  FILTER "@status == 'active'" 
+  SCHEMA title TEXT body TEXT
+```
+```
+FT.CREATE idx ON JSON 
+  FILTER '@type == "article"' 
+  SCHEMA $.title AS title TEXT $.tags AS tags TAG
+```
+> You can create a **partial index** using the `FILTER` clause in the `FT.CREATE` command. This allows you to index only a subset of documents that match a specific condition, similar to partial indexes in traditional RDBMS systems.
+4. Index can be built accoss multiple sets of data; 
+```
+FT.CREATE people_idx ON HASH 
+  PREFIX 2 user: customer: 
+  SCHEMA name TEXT email TEXT signup_date NUMERIC
+```
+> RediSearch fully supports indexing across **multiple key prefixes** using the `PREFIX` option in `FT.CREATE`. This allows you to build a single unified index that spans different logical datasets, like user: and customer: —as long as they share a compatible schema.
 
 
 #### III. Dual interfaces 
