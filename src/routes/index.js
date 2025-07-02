@@ -91,6 +91,7 @@ router.post('/ftsearch', async (req, res) => {
     body: JSON.stringify({ query, mode, expand })
   });
   const results = await response.json();
+  
   res.render('ftsearch', { query, mode, expand, results } );
 });
 
@@ -112,6 +113,7 @@ router.post('/ftsredis', async (req, res) => {
     body: JSON.stringify({ query })
   });  
   const results = await response.json();
+
   res.render('ftsredis', { query, results } );
 });
 
@@ -120,7 +122,7 @@ router.get('/statsredis', async (req, res) => {
   const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/statsredis`);
   const stats = await response.json();
   
-  res.render('statsredis', { stats });
+  res.render('stats', { stats });
 });
 
 // Details page
@@ -130,7 +132,7 @@ router.get('/detailsredis/:id', async (req, res) => {
   const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/v1/detailsredis?id=${id}`);
   const record = await response.json();
 
-  res.render('detailsredis', { record });
+  res.render('details', { record });
 });
 
 export default router;

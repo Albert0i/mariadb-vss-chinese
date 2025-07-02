@@ -86,6 +86,7 @@ export async function findDocuments(query, limit = 5) {
  export async function getStatus() { 
    return { 
       version: await getVersion(),
+      model: 'N/A',
       documents: await countDocuments('*'),
       size: 13.1, 
       visited: await countDocuments('@visited:[(0 +inf]'), 
