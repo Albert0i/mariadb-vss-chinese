@@ -253,17 +253,6 @@ MODULE list
 
 ```
 FT.CREATE fts:chinese:index 
-    ON HASH PREFIX 1 fts:chinese:document: SCHEMA 
-    id NUMERIC SORTABLE 
-    textChi TEXT WEIGHT 1.0 SORTABLE 
-    textChiSeg TEXT WEIGHT 1.0 SORTABLE 
-    visited NUMERIC SORTABLE 
-    createdAt TAG SORTABLE 
-    updatedAt TAG SORTABLE 
-    updateIdent NUMERIC SORTABLE 
-```
-```
-FT.CREATE fts:chinese:index 
     ON HASH PREFIX 1 fts:chinese:document: LANGUAGE chinese 
     SCHEMA 
     id NUMERIC SORTABLE 
