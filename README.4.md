@@ -47,14 +47,20 @@ FT.SEARCH index query
   [DIALECT dialect]
 ```
 
+Required arguments
+
+---
+
 **index**
 
-is index name. You must first create the index using FT.CREATE.
+is index name. You must first create the index using [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/).
 
-query
-is text query to search. If it's more than a single word, put it in quotes. Refer to Query syntax for more details.
+**query**
 
-Optional arguments
+is text query to search. If it's more than a single word, put it in quotes. Refer to [Query syntax](https://redis.io/docs/latest/develop/ai/search-and-query/query/) for more details.
+
+**Optional arguments**
+
 NOCONTENT
 returns the document ids and not the content. This is useful if RediSearch is only an index on an external document collection.
 
