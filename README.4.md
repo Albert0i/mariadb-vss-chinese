@@ -17,12 +17,9 @@ To consummate our story of Fulltext Search, we pull out our new friend... Redis 
 
 
 #### I. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) (TL;DR)
-
-##### 🏗️ `FT.CREATE` — Create a Full-Text Search Index in Redis
-
 The `FT.CREATE` command defines a **search index** over Redis data structures (either `HASH` or `JSON`) to enable full-text, structured, and hybrid search capabilities.
 
-##### 🔤 Basic Syntax
+#### 1. Basic Syntax
 ```bash
 FT.CREATE index_name 
   [ON HASH|JSON] 
@@ -42,7 +39,7 @@ FT.CREATE index_name
   SCHEMA field [AS attribute] type [options...]
 ```
 
-##### 🧱 Index Scope and Target
+#### 2. Index Scope and Target
 
 | Option | Description |
 |--------|-------------|
@@ -51,7 +48,7 @@ FT.CREATE index_name
 | `FILTER expression` | Lua-like expression to filter which documents are indexed. |
 | `TEMPORARY seconds` | Creates a temporary index that expires after the given time. |
 
-##### 🌍 Language and Scoring
+#### 3. Language and Scoring
 
 | Option | Description |
 |--------|-------------|
@@ -61,7 +58,7 @@ FT.CREATE index_name
 | `SCORE_FIELD field` | Dynamically assigns scores from a document field. |
 | `PAYLOAD_FIELD field` | Stores custom metadata (payload) for each document. |
 
-##### ⚙️ Performance and Memory Flags
+#### 4. Performance and Memory Flags
 
 | Flag | Effect |
 |------|--------|
@@ -71,11 +68,11 @@ FT.CREATE index_name
 | `NOHL` | Disables highlighting support. |
 | `STOPWORDS num word ...` | Custom stopword list; use `0` to disable stopwords entirely. |
 
-##### 🧬 SCHEMA Definition
+#### 5. SCHEMA Definition
 
 The `SCHEMA` section defines which fields to index and how. Each field can be renamed using `AS`.
 
-###### 🔠 Field Types and Options
+##### 🔠 Field Types and Options
 
 | Type | Description | Options |
 |------|-------------|---------|
@@ -97,7 +94,7 @@ FT.CREATE booksIdx ON HASH PREFIX 1 book:
 ```
 This creates an index on keys like `book:*`, indexing title and author for full-text, genre for filtering, published year for range queries, and location for geo queries.
 
-##### 🧠 Advanced Use Cases
+#### 6. Advanced Use Cases
 
 - **Multilingual Search**: Use `LANGUAGE_FIELD` to stem documents in their native language.
 - **Dynamic Scoring**: Combine `SCORE_FIELD` with user engagement metrics.
