@@ -19,7 +19,7 @@ To consummate our story of Fulltext Search, we pull out our new friend... Redis 
 #### I. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) (TL;DR)
 The `FT.CREATE` command defines a **search index** over Redis data structures (either `HASH` or `JSON`) to enable full-text, structured, and hybrid search capabilities.
 
-#### 1. Basic Syntax
+##### 1. Basic Syntax
 ```bash
 FT.CREATE index_name 
   [ON HASH|JSON] 
@@ -39,7 +39,7 @@ FT.CREATE index_name
   SCHEMA field [AS attribute] type [options...]
 ```
 
-#### 2. Index Scope and Target
+##### 2. Index Scope and Target
 
 | Option | Description |
 |--------|-------------|
@@ -48,7 +48,7 @@ FT.CREATE index_name
 | `FILTER expression` | Lua-like expression to filter which documents are indexed. |
 | `TEMPORARY seconds` | Creates a temporary index that expires after the given time. |
 
-#### 3. Language and Scoring
+##### 3. Language and Scoring
 
 | Option | Description |
 |--------|-------------|
@@ -58,7 +58,7 @@ FT.CREATE index_name
 | `SCORE_FIELD field` | Dynamically assigns scores from a document field. |
 | `PAYLOAD_FIELD field` | Stores custom metadata (payload) for each document. |
 
-#### 4. Performance and Memory Flags
+##### 4. Performance and Memory Flags
 
 | Flag | Effect |
 |------|--------|
@@ -68,11 +68,11 @@ FT.CREATE index_name
 | `NOHL` | Disables highlighting support. |
 | `STOPWORDS num word ...` | Custom stopword list; use `0` to disable stopwords entirely. |
 
-#### 5. SCHEMA Definition
+##### 5. SCHEMA Definition
 
 The `SCHEMA` section defines which fields to index and how. Each field can be renamed using `AS`.
 
-##### 🔠 Field Types and Options
+- Field Types and Options
 
 | Type | Description | Options |
 |------|-------------|---------|
@@ -82,7 +82,7 @@ The `SCHEMA` section defines which fields to index and how. Each field can be re
 | `GEO` | Geospatial field (lat/lon) | — |
 | `VECTOR` | Vector field for similarity search | `FLAT` or `HNSW` algorithm with parameters |
 
-##### 🧪 Example: Indexing Books
+- Example: Indexing Books
 ```bash
 FT.CREATE booksIdx ON HASH PREFIX 1 book: 
   SCHEMA 
@@ -94,7 +94,7 @@ FT.CREATE booksIdx ON HASH PREFIX 1 book:
 ```
 This creates an index on keys like `book:*`, indexing title and author for full-text, genre for filtering, published year for range queries, and location for geo queries.
 
-#### 6. Advanced Use Cases
+##### 6. Advanced Use Cases
 
 - **Multilingual Search**: Use `LANGUAGE_FIELD` to stem documents in their native language.
 - **Dynamic Scoring**: Combine `SCORE_FIELD` with user engagement metrics.
@@ -103,9 +103,6 @@ This creates an index on keys like `book:*`, indexing title and author for full-
 
 
 #### II. [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) (TL;DR)
-
-##### 🔍 `FT.SEARCH` — Query a RediSearch Index
-
 The `FT.SEARCH` command performs **full-text, structured, and hybrid queries** on a RediSearch index. It retrieves documents that match a given query string, with support for filtering, sorting, highlighting, summarization, and vector similarity.
 
 ##### 🧾 Syntax Overview
