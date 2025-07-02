@@ -105,7 +105,7 @@ This creates an index on keys like `book:*`, indexing title and author for full-
 #### II. [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) (TL;DR)
 The `FT.SEARCH` command performs **full-text, structured, and hybrid queries** on a RediSearch index. It retrieves documents that match a given query string, with support for filtering, sorting, highlighting, summarization, and vector similarity.
 
-##### 🧾 Syntax Overview
+##### 1. Syntax Overview
 ```bash
 FT.SEARCH index query 
   [NOCONTENT] 
@@ -124,7 +124,7 @@ FT.SEARCH index query
   [DIALECT dialect_version]
 ```
 
-##### 🔤 Query Language Features
+##### 2. Query Language Features
 
 | Feature | Description |
 |--------|-------------|
@@ -138,7 +138,7 @@ FT.SEARCH index query
 | **Geo queries** | Use `GEOFILTER` for lat/lon + radius filtering. |
 | **Vector search** | Combine with `VECTOR` clause for hybrid semantic search. |
 
-##### 📦 Result Control Options
+##### 3. Result Control Options
 
 | Option | Description |
 |--------|-------------|
@@ -149,14 +149,14 @@ FT.SEARCH index query
 | `WITHPAYLOADS` | Return payloads stored with documents. |
 | `NOCONTENT` | Return only document IDs (no fields). |
 
-##### 🧠 Highlighting & Summarization
+##### 4. Highlighting & Summarization
 
 | Feature | Description |
 |--------|-------------|
 | `HIGHLIGHT` | Wrap matching terms in tags (default: `<b>`, `</b>`). |
 | `SUMMARIZE` | Extracts text fragments with matches. Options: `FRAGS`, `LEN`, `SEPARATOR`. |
 
-##### 🧭 Filtering & Targeting
+##### 5. Filtering & Targeting
 
 | Option | Description |
 |--------|-------------|
@@ -165,20 +165,20 @@ FT.SEARCH index query
 | `INKEYS num key ...` | Restrict search to specific keys. |
 | `INFIELDS num field ...` | Restrict search to specific fields. |
 
-##### 🧪 Parameters & Dialects
+##### 6. Parameters & Dialects
 
 | Option | Description |
 |--------|-------------|
 | `PARAMS num name value ...` | Pass named parameters for dynamic queries. |
 | `DIALECT version` | Use advanced query syntax (e.g., `DIALECT 2` for vector search). |
 
-##### 🧬 Example 1: Basic Full-Text Search
+##### 7. Example 1: Basic Full-Text Search
 ```bash
 FT.SEARCH booksIdx "redis search engine"
 ```
 Searches for documents containing all three terms.
 
-##### 🧬 Example 2: Field-Specific + Sorting + Pagination
+##### 8. Example 2: Field-Specific + Sorting + Pagination
 ```bash
 FT.SEARCH booksIdx "@genre:{sci-fi} @author:Asimov"
   SORTBY published DESC 
@@ -187,7 +187,7 @@ FT.SEARCH booksIdx "@genre:{sci-fi} @author:Asimov"
 ```
 Finds sci-fi books by Asimov, sorted by publish date, returning top 5 with selected fields.
 
-##### 🧬 Example 3: Highlighting and Summarization
+##### 9. Example 3: Highlighting and Summarization
 ```bash
 FT.SEARCH booksIdx "quantum computing"
   HIGHLIGHT FIELDS 1 description TAGS <em> </em>
@@ -195,7 +195,7 @@ FT.SEARCH booksIdx "quantum computing"
 ```
 Returns snippets from the `description` field with highlighted terms.
 
-##### 🧬 Example 4: Hybrid Vector + Text Search
+##### 10. Example 4: Hybrid Vector + Text Search
 ```bash
 FT.SEARCH myIdx "*"
   PARAMS 2 vec_blob $blob
@@ -203,7 +203,7 @@ FT.SEARCH myIdx "*"
 ```
 Performs a vector similarity search using a binary blob and RediSearch dialect 2.
 
-##### 📚 Notes & Best Practices
+##### 11. Notes & Best Practices
 
 - **Stemming and stopwords** are language-dependent; configure via `FT.CREATE`.
 - **Performance**: Use `NOCONTENT`, `RETURN`, and `LIMIT` to reduce payload.
