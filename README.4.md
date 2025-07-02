@@ -3,11 +3,49 @@
 
 **DISCLAIMER: Over 90% of this article is written by HIM, i mean AI**
 
+![alt AI-suggestion-3](img/AI-suggestion-3.JPG)
+
 
 #### Prologue 
-To consummate our story of Fulltext Search, we pull in our old friend... Redis is a memoory-first multi-model NoSQL database. 
+To consummate our story of Fulltext Search, we pull out our new friend... Redis is a memoory-first multi-model NoSQL database. The [Redis Query Engine](https://redis.io/docs/latest/develop/ai/search-and-query/) offers an enhanced Redis experience via the following search and query features:
+- A rich query language
+- Incremental indexing on JSON and hash documents
+- Vector search
+- Full-text search
+- Geospatial queries
+- Aggregations
 
-[Chinese support](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/chinese/)
+
+#### I. FT.CREATE (TL;DR)
+
+
+#### II. FT.SEARCH (TL;DR)
+
+
+#### III. 
+
+To check if your Redis installation support searching with: 
+```
+INFO modules
+```
+Or 
+```
+MODULE list
+```
+
+![alt ](img/rediSearch.JPG)
+
+> [Chinese support](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/chinese/) allows Chinese documents to be added and tokenized using segmentation rather than simple tokenization using whitespace and/or punctuation.
+
+> Indexing a Chinese document is different than indexing a document in most other languages because of how tokens are extracted. While most languages can have their tokens distinguished by separation characters and whitespace, this is not common in Chinese.
+
+> Chinese tokenization is done by scanning the input text and checking every character or sequence of characters against a dictionary of predefined terms, and determining the most likely match based on the surrounding terms and characters.
+
+> Redis makes use of the [Friso](https://github.com/lionsoul2014/friso) Chinese tokenization library for this purpose. This is largely transparent to the user and often no additional configuration is required.
+
+
+
+
 
 > When using `FT.SEARCH` in RediSearch to query Chinese characters, you don’t need to manually encode them **but you do need to configure the index and query properly to support Chinese tokenization**. 
 
@@ -18,9 +56,7 @@ To consummate our story of Fulltext Search, we pull in our old friend... Redis i
 
 
 
-#### I. FT.CREATE (TL;DR)
 
-#### II. FT.SEARCH (TL;DR)
 
 #### III. Dual interfaces 
 
