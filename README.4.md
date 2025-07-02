@@ -233,8 +233,6 @@ MODULE list
 
 > Redis makes use of the [Friso](https://github.com/lionsoul2014/friso) Chinese tokenization library for this purpose. This is largely transparent to the user and often no additional configuration is required.
 
-> When using `FT.SEARCH` in RediSearch to query Chinese characters, you don’t need to manually encode them **but you do need to configure the index and query properly to support Chinese tokenization**. 
-
 > A stemmer is used for the supplied language during indexing. If an unsupported language is sent, the command returns an error. The supported languages are Arabic, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, Greek, Hungarian, Indonesian, Irish, Italian, Lithuanian, Nepali, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Tamil, Turkish, and Chinese.
 
 > When adding Chinese language documents, set LANGUAGE chinese for the indexer to properly tokenize the terms. If you use the default language, then search terms are extracted based on punctuation characters and whitespace. The Chinese language tokenizer makes use of a segmentation algorithm (via [Friso](https://github.com/lionsoul2014/friso)), which segments text and checks it against a predefined dictionary. See [Stemming](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/stemming/) for more information.
@@ -259,6 +257,17 @@ FT.CREATE fts:chinese:index
     id NUMERIC SORTABLE 
     textChi TEXT WEIGHT 1.0 SORTABLE 
     textChiSeg TEXT WEIGHT 1.0 SORTABLE 
+    visited NUMERIC SORTABLE 
+    createdAt TAG SORTABLE 
+    updatedAt TAG SORTABLE 
+    updateIdent NUMERIC SORTABLE 
+```
+```
+FT.CREATE fts:chinese:index 
+    ON HASH PREFIX 1 fts:chinese:document: LANGUAGE chinese 
+    SCHEMA 
+    id NUMERIC SORTABLE 
+    textChi TEXT WEIGHT 1.0 SORTABLE     
     visited NUMERIC SORTABLE 
     createdAt TAG SORTABLE 
     updatedAt TAG SORTABLE 
