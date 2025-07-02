@@ -105,7 +105,7 @@ This creates an index on keys like `book:*`, indexing title and author for full-
 #### II. [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) (TL;DR)
 The `FT.SEARCH` command performs **full-text, structured, and hybrid queries** on a RediSearch index. It retrieves documents that match a given query string, with support for filtering, sorting, highlighting, summarization, and vector similarity.
 
-##### 1. Syntax Overview
+##### 1. Basic Syntax
 ```bash
 FT.SEARCH index query 
   [NOCONTENT] 
