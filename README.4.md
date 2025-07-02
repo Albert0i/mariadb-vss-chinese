@@ -269,6 +269,14 @@ FT.CREATE fts:chinese:index
 
 1. `LANGUAGE chinese` is added as needed; 
 2. Only fields to be searched should be indexed; 
+```
+FT.CREATE fts:chinese:index 
+    ON HASH PREFIX 1 fts:chinese:document: LANGUAGE chinese 
+    SCHEMA 
+    textChi TEXT WEIGHT 1.0 SORTABLE     
+    visited NUMERIC SORTABLE 
+```
+Our minimum version of index can save more space. 
 3. Index can be built on a subset of data:
 ```
 FT.CREATE idx_name ON HASH 
