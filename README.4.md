@@ -18,8 +18,203 @@ To consummate our story of Fulltext Search, we pull out our new friend... Redis 
 
 #### I. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) (TL;DR)
 
+##### 🏗️ `FT.CREATE` — Create a Full-Text Search Index in Redis
+
+The `FT.CREATE` command defines a **search index** over Redis data structures (either `HASH` or `JSON`) to enable full-text, structured, and hybrid search capabilities.
+
+##### 🔤 Basic Syntax
+```bash
+FT.CREATE index_name 
+  [ON HASH|JSON] 
+  [PREFIX count prefix ...] 
+  [FILTER expression] 
+  [LANGUAGE default_lang] 
+  [LANGUAGE_FIELD lang_field] 
+  [SCORE default_score] 
+  [SCORE_FIELD score_field] 
+  [PAYLOAD_FIELD payload_field] 
+  [MAXTEXTFIELDS] 
+  [TEMPORARY seconds] 
+  [NOOFFSETS] 
+  [NOFIELDS] 
+  [NOHL] 
+  [STOPWORDS num word ...] 
+  SCHEMA field [AS attribute] type [options...]
+```
+
+##### 🧱 Index Scope and Target
+
+| Option | Description |
+|--------|-------------|
+| `ON HASH` / `ON JSON` | Specifies the data type to index. Default is `HASH`. |
+| `PREFIX count prefix ...` | Restricts indexing to keys with specific prefixes. |
+| `FILTER expression` | Lua-like expression to filter which documents are indexed. |
+| `TEMPORARY seconds` | Creates a temporary index that expires after the given time. |
+
+##### 🌍 Language and Scoring
+
+| Option | Description |
+|--------|-------------|
+| `LANGUAGE lang` | Sets the default language for stemming (e.g., `english`, `chinese`). |
+| `LANGUAGE_FIELD field` | Dynamically sets language per document using a field. |
+| `SCORE float` | Assigns a default relevance score to all documents. |
+| `SCORE_FIELD field` | Dynamically assigns scores from a document field. |
+| `PAYLOAD_FIELD field` | Stores custom metadata (payload) for each document. |
+
+##### ⚙️ Performance and Memory Flags
+
+| Flag | Effect |
+|------|--------|
+| `MAXTEXTFIELDS` | Optimizes indexing when many text fields are used. |
+| `NOOFFSETS` | Disables term offset tracking (saves memory, disables highlighting/summarization). |
+| `NOFIELDS` | Disables field name indexing (saves memory). |
+| `NOHL` | Disables highlighting support. |
+| `STOPWORDS num word ...` | Custom stopword list; use `0` to disable stopwords entirely. |
+
+##### 🧬 SCHEMA Definition
+
+The `SCHEMA` section defines which fields to index and how. Each field can be renamed using `AS`.
+
+###### 🔠 Field Types and Options
+
+| Type | Description | Options |
+|------|-------------|---------|
+| `TEXT` | Full-text searchable field | `WEIGHT`, `PHONETIC`, `NOSTEM`, `SORTABLE`, `UNF`, `WITHSUFFIXTRIE` |
+| `TAG` | Exact-match field with comma-separated values | `SEPARATOR`, `CASE-SENSITIVE`, `SORTABLE` |
+| `NUMERIC` | Numeric field for range queries | `SORTABLE` |
+| `GEO` | Geospatial field (lat/lon) | — |
+| `VECTOR` | Vector field for similarity search | `FLAT` or `HNSW` algorithm with parameters |
+
+##### 🧪 Example: Indexing Books
+```bash
+FT.CREATE booksIdx ON HASH PREFIX 1 book: 
+  SCHEMA 
+    title TEXT WEIGHT 5.0 
+    author TEXT 
+    genre TAG 
+    published NUMERIC 
+    location GEO
+```
+This creates an index on keys like `book:*`, indexing title and author for full-text, genre for filtering, published year for range queries, and location for geo queries.
+
+##### 🧠 Advanced Use Cases
+
+- **Multilingual Search**: Use `LANGUAGE_FIELD` to stem documents in their native language.
+- **Dynamic Scoring**: Combine `SCORE_FIELD` with user engagement metrics.
+- **Hybrid Search**: Combine `TEXT` and `VECTOR` fields for semantic + lexical search.
+- **Payloads**: Store metadata like click-through rates or categories for downstream use.
+
 
 #### II. [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) (TL;DR)
+
+##### 🔍 `FT.SEARCH` — Query a RediSearch Index
+
+The `FT.SEARCH` command performs **full-text, structured, and hybrid queries** on a RediSearch index. It retrieves documents that match a given query string, with support for filtering, sorting, highlighting, summarization, and vector similarity.
+
+##### 🧾 Syntax Overview
+```bash
+FT.SEARCH index query 
+  [NOCONTENT] 
+  [LIMIT offset num] 
+  [SORTBY field [ASC|DESC]] 
+  [RETURN num field ...] 
+  [WITHSCORES] 
+  [WITHPAYLOADS] 
+  [FILTER field min max] 
+  [GEOFILTER field lon lat radius m|km|ft|mi] 
+  [INKEYS num key ...] 
+  [INFIELDS num field ...] 
+  [HIGHLIGHT [FIELDS num field ...] [TAGS open close]] 
+  [SUMMARIZE [FIELDS num field ...] [FRAGS num] [LEN num] [SEPARATOR str]] 
+  [PARAMS num name value ...] 
+  [DIALECT dialect_version]
+```
+
+##### 🔤 Query Language Features
+
+| Feature | Description |
+|--------|-------------|
+| **Free-text search** | Supports stemming, stopword filtering, and tokenization. |
+| **Field targeting** | Use `@field:term` to restrict search to specific fields. |
+| **Boolean logic** | Combine terms with `AND`, `OR`, `-` (NOT). |
+| **Wildcards** | Use `*` and `?` for prefix/suffix/infix matching. |
+| **Fuzzy search** | Use `%term%` for Levenshtein distance-based matching. |
+| **Exact match** | Use double quotes `"exact phrase"` or `==value`. |
+| **Numeric ranges** | Use `FILTER` for numeric fields. |
+| **Geo queries** | Use `GEOFILTER` for lat/lon + radius filtering. |
+| **Vector search** | Combine with `VECTOR` clause for hybrid semantic search. |
+
+##### 📦 Result Control Options
+
+| Option | Description |
+|--------|-------------|
+| `LIMIT offset num` | Pagination control. |
+| `SORTBY field ASC|DESC` | Sort results by a sortable field. |
+| `RETURN num field ...` | Specify which fields to return. |
+| `WITHSCORES` | Include relevance scores. |
+| `WITHPAYLOADS` | Return payloads stored with documents. |
+| `NOCONTENT` | Return only document IDs (no fields). |
+
+##### 🧠 Highlighting & Summarization
+
+| Feature | Description |
+|--------|-------------|
+| `HIGHLIGHT` | Wrap matching terms in tags (default: `<b>`, `</b>`). |
+| `SUMMARIZE` | Extracts text fragments with matches. Options: `FRAGS`, `LEN`, `SEPARATOR`. |
+
+##### 🧭 Filtering & Targeting
+
+| Option | Description |
+|--------|-------------|
+| `FILTER field min max` | Numeric range filter. |
+| `GEOFILTER field lon lat radius unit` | Geospatial filtering. |
+| `INKEYS num key ...` | Restrict search to specific keys. |
+| `INFIELDS num field ...` | Restrict search to specific fields. |
+
+##### 🧪 Parameters & Dialects
+
+| Option | Description |
+|--------|-------------|
+| `PARAMS num name value ...` | Pass named parameters for dynamic queries. |
+| `DIALECT version` | Use advanced query syntax (e.g., `DIALECT 2` for vector search). |
+
+##### 🧬 Example 1: Basic Full-Text Search
+```bash
+FT.SEARCH booksIdx "redis search engine"
+```
+Searches for documents containing all three terms.
+
+##### 🧬 Example 2: Field-Specific + Sorting + Pagination
+```bash
+FT.SEARCH booksIdx "@genre:{sci-fi} @author:Asimov"
+  SORTBY published DESC 
+  LIMIT 0 5 
+  RETURN 3 title published genre
+```
+Finds sci-fi books by Asimov, sorted by publish date, returning top 5 with selected fields.
+
+##### 🧬 Example 3: Highlighting and Summarization
+```bash
+FT.SEARCH booksIdx "quantum computing"
+  HIGHLIGHT FIELDS 1 description TAGS <em> </em>
+  SUMMARIZE FIELDS 1 description FRAGS 2 LEN 30 SEPARATOR "..."
+```
+Returns snippets from the `description` field with highlighted terms.
+
+##### 🧬 Example 4: Hybrid Vector + Text Search
+```bash
+FT.SEARCH myIdx "*"
+  PARAMS 2 vec_blob $blob
+  VECTOR_RANGE v_field 1 BLOB $blob DIALECT 2
+```
+Performs a vector similarity search using a binary blob and RediSearch dialect 2.
+
+##### 📚 Notes & Best Practices
+
+- **Stemming and stopwords** are language-dependent; configure via `FT.CREATE`.
+- **Performance**: Use `NOCONTENT`, `RETURN`, and `LIMIT` to reduce payload.
+- **Security**: Only returns keys the user has read access to.
+- **Vector search** requires RediSearch 2.4+ and proper `FT.CREATE` schema.
 
 
 #### III. Building the index 
