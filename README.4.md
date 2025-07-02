@@ -267,7 +267,7 @@ FT.CREATE fts:chinese:index
 
 This use [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) to create a Fulltext index for HASH data structures. 
 
-
+[FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html)
 
 
 
