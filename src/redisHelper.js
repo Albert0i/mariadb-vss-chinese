@@ -4,6 +4,9 @@
 import 'dotenv/config'
 import { redis } from './redis/redis.js '
 
+/*
+   Keys management 
+*/
 export function getIndexName() {
    return 'fts:chinese:index';
 }
@@ -12,6 +15,9 @@ export function getDocumentKeyName(id) {
     return `fts:chinese:documents:${id}`
 }
 
+/*
+   Index management 
+*/
 export async function checkIndex() {
    const redisCommand = `FT.INFO ${getIndexName()}`
    
@@ -30,12 +36,16 @@ export async function createIndex() {
    return await redis.sendCommand(redisCommand.split(' '))
 }
 
+/*
+   Documents management 
+*/
 export async function findDocuments(query, limit = 5) {
     const indexName = getIndexName()
 
     // Find documents 
     const redisCommand = `FT.SEARCH ${indexName} ${query.trim()} WITHSCORES RETURN 2 textChi id LIMIT 0 ${limit}`
     const searchResults = await redis.sendCommand(redisCommand.split(' '));
+    // “Even the straightest road has its twist.”
     const docs = twist(searchResults)
  
     // Update `visited` field
@@ -60,9 +70,8 @@ export async function findDocuments(query, limit = 5) {
  
  export async function countDocuments(query) { 
    const indexName = getIndexName()
-
     // Count documents 
-    // { total: 5, documents: [] }
+    // { total: n, documents: [value, ...] }
     const { total } = await redis.ft.search(indexName, query.trim(), {
        NOCONTENT: true,
        LIMIT: {
@@ -77,17 +86,17 @@ export async function findDocuments(query, limit = 5) {
  export async function getStatus() { 
    return { 
       version: await getVersion(),
-      documents: await getDocumentsCount('*'),
+      documents: await countDocuments('*'),
       size: 13.1, 
-      visited: await getDocumentsCount('@visited:[(0 +inf]'), 
-      results: [
-         { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
-         { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
-         { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
-         { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
-         { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
-       ]
-      // results: await findDocuments('@visited:[(0 +inf]')
+      visited: await countDocuments('@visited:[(0 +inf]'), 
+      // results: [
+      //    { id: '31',  textChi: '夏天的海灘充滿歡笑與快樂', visited: '10' },
+      //    { id: '67',  textChi: '夏天的微風讓人感覺舒適', visited: '10' },
+      //    { id: '88',  textChi: '夏天的冰淇淋讓人感到無比清涼', visited: '10' },
+      //    { id: '246', textChi: '夏天的海灘充滿活力', visited: '10' },
+      //    { id: '392', textChi: '夏天的微風帶來涼爽的感受',  visited: '5' }
+      //  ]
+      results: await getDocuments('@visited:[(0 +inf]')
    };
  }
 
@@ -111,26 +120,26 @@ export async function findDocuments(query, limit = 5) {
         .map(line => line.split(':'))
     );
     
-    return (parsed.redis_version); // e.g., "7.2.0" 
+    return `Redis ${parsed.redis_version}`; // e.g., "7.2.0" 
  }
 
  /*
     FT.SEARCH fts:chinese:index * NOCONTENT LIMIT 0 0
  */
- export async function getDocumentsCount(query) {
-   // const redisCommand = `FT.SEARCH ${getIndexName()} * NOCONTENT LIMIT 0 0`
+//  export async function getDocumentsCount(query) {
+//    // const redisCommand = `FT.SEARCH ${getIndexName()} * NOCONTENT LIMIT 0 0`
    
-   // return await redis.sendCommand(redisCommand.split(' '))
-   const { total } =  await redis.ft.search(getIndexName(), query, {
-      NOCONTENT: true, 
-      LIMIT: {
-          from: 0,
-          size: 0
-      }
-  });
+//    // return await redis.sendCommand(redisCommand.split(' '))
+//    const { total } =  await redis.ft.search(getIndexName(), query, {
+//       NOCONTENT: true, 
+//       LIMIT: {
+//           from: 0,
+//           size: 0
+//       }
+//   });
 
-  return total;
- }
+//   return total;
+//  }
  /*
     FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" NOCONTENT LIMIT 0 0
  */
@@ -149,14 +158,21 @@ export async function findDocuments(query, limit = 5) {
     FT.SEARCH fts:chinese:index "@visited:[(0 +inf]" RETURN 3 id textChi visited LIMIT 0 100
     process.env.MAX_RETURN
  */ 
- export async function getVisitedDocuments() {
-   const searchResult =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
+ export async function getDocuments(query) {
+   const searchResult =  await redis.ft.search(getIndexName(), query, {
       RETURN: ['id', 'textChi', 'visited'],
       LIMIT: {
           from: 0,
           size: process.env.MAX_RETURN
       }
   });
+//    const searchResult =  await redis.ft.search(getIndexName(), '@visited:[(0 +inf]', {
+//       RETURN: ['id', 'textChi', 'visited'],
+//       LIMIT: {
+//           from: 0,
+//           size: process.env.MAX_RETURN
+//       }
+//   });
   
   // { total, documents }
   return searchResult.documents.map(doc => {
