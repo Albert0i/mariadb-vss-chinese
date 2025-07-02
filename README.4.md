@@ -267,7 +267,7 @@ FT.CREATE fts:chinese:index
 ```
 **Caveat**
 
-1. `LANGUAGE chinese` is added as needed; 
+1. `LANGUAGE chinese` is required, obviously; 
 2. Only fields to be searched should be indexed; 
 ```
 FT.CREATE fts:chinese:index 
@@ -277,6 +277,7 @@ FT.CREATE fts:chinese:index
     visited NUMERIC SORTABLE 
 ```
 Our minimum version of index can save more space. 
+
 3. Index can be built on a subset of data:
 ```
 FT.CREATE idx_name ON HASH 
