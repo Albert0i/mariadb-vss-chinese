@@ -66,7 +66,7 @@ export async function findDocuments(query, offset=0, limit = 10) {
  export async function countDocuments(query='*') { 
    const indexName = getIndexName()
     // Count documents 
-    // { total: n, documents: [value, ...] }
+    // { total: integer, documents: [ { id:string, value:object }, ...]}
     const { total } = await redis.ft.search(indexName, query.trim(), {
        NOCONTENT: true,
        LIMIT: {
@@ -123,7 +123,7 @@ export async function findDocuments(query, offset=0, limit = 10) {
       }
   });
   
-   // { total: n, documents: [value, ...] }
+   // { total: integer, documents: [ { id:string, value:object }, ...]}
   return searchResult.documents.map(doc => {
    return doc.value
   })

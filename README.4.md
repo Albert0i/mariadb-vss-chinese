@@ -622,7 +622,7 @@ export async function findDocuments(query, offset=0, limit = 10) {
  export async function countDocuments(query='*') { 
    const indexName = getIndexName()
     // Count documents 
-    // { total: n, documents: [value, ...] }
+    // { total: integer, documents: [ { id:string, value:object }, ...]}
     const { total } = await redis.ft.search(indexName, query.trim(), {
        NOCONTENT: true,
        LIMIT: {
@@ -634,6 +634,28 @@ export async function findDocuments(query, offset=0, limit = 10) {
    return total
  }
 ```
+`findDocuments` is an exemplar of `redis.sendCommand([...])`, since `WITHSCORES` simply won't work on `redis.ft.search(key, query, options)`. 
+
+Previously, we have used SQL to update a visited document: 
+```
+      UPDATE documents 
+      SET visited = visited + 1, 
+          updatedAt = Now(), 
+          updateIdent = updateIdent + 1
+      WHERE id=${doc.id}
+```
+
+There is no corresponding command in Redis. Therefore, a transaction is used to wrap them to that Redis will treat them as a single action and maintain the atomicity. 
+```
+      redis.multi()
+      .hIncrBy(docKey, 'visited', 1)
+      .hSet(docKey, 'updatedAt', isoDate)
+      .hIncrBy(docKey, 'updateIdent', 1)
+      .exec()
+```
+
+# “Even the straightest road has its twist.”
+
 
 #### VI. Bonus 
 Start the server: 
@@ -664,7 +686,7 @@ Enjoy!
 
 [Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
 
-“Even the straightest road has its twist.”
+
 
 
 #### II. Create a full-text index
@@ -673,4 +695,4 @@ Enjoy!
 #### Epilogue 
 
 
-### EOF (2025/06/30)
+### EOF (2025/07/04)
