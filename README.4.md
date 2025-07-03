@@ -227,7 +227,9 @@ Redis Query Engine supports Fulltext Search in Chinese out of the box!
 > Redis makes use of the [Friso](https://github.com/lionsoul2014/friso) Chinese tokenization library for this purpose. This is largely transparent to the user and often no additional configuration is required.
 
 According to [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) documentation: 
+
 **LANGUAGE_FIELD {lang_attribute}**
+
 > is a document attribute set as the document language.
 
 > A stemmer is used for the supplied language during indexing. If an unsupported language is sent, the command returns an error. The supported languages are Arabic, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, Greek, Hungarian, Indonesian, Irish, Italian, Lithuanian, Nepali, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Tamil, Turkish, and Chinese.
@@ -235,7 +237,9 @@ According to [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/) docum
 > When adding Chinese language documents, set LANGUAGE chinese for the indexer to properly tokenize the terms. If you use the default language, then search terms are extracted based on punctuation characters and whitespace. The Chinese language tokenizer makes use of a segmentation algorithm (via [Friso](https://github.com/lionsoul2014/friso)), which segments text and checks it against a predefined dictionary. See [Stemming](https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/stemming/) for more information.
 
 According to [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/) documentation: 
+
 **LANGUAGE_FIELD {lang_attribute}**
+
 use a stemmer for the supplied language during search for query expansion. If querying documents in Chinese, set to chinese to properly tokenize the query terms. Defaults to English. If an unsupported language is sent, the command returns an error. See F[T.CREATE](https://redis.io/docs/latest/commands/ft.create/) for the list of languages. If LANGUAGE was specified as part of index creation, it doesn't need to specified with FT.SEARCH.
 
 Instead of crafting `FT.CREATE` command from scratch, a small utility [FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html) may give you a hand. To envisage the data model in JSON format, for example: 
