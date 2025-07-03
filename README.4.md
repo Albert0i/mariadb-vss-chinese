@@ -474,6 +474,9 @@ await redis.sendCommand([
 | Error handling       | ✅ Safer with validation       | ❌ Manual formatting required      |
 | Use case             | Standard queries               | Advanced/custom/dialect queries    |
 
+--- 
+Note: 
+
 
 #### IV. Seeding 
 `seedRedis.js`
@@ -517,9 +520,25 @@ console.log('Seeding finished!')
 
 await redis.close()
 ```
+checkIndex() and createIndex() 
+
+
+A cheap trick is used to implement UPSERT in MariaDB
+```
+// Add new document
+    return await prisma.$executeRaw`
+                    INSERT INTO documents (textChi, embedding) 
+                    VALUES( ${document}, VEC_FromText(${JSON.stringify(vector)}) ) 
+                    ON DUPLICATE KEY 
+                    UPDATE updateIdent = updateIdent + 1;
+              `;              
+```
 
 
 #### V. Querying 
+
+```
+```
 
 #### VI. Bonus 
 1. List of articles 
