@@ -299,6 +299,9 @@ FT.CREATE people_idx ON HASH
 ```
 > RediSearch fully supports indexing across **multiple key prefixes** using the `PREFIX` option in `FT.CREATE`. This allows you to build a single unified index that spans different logical datasets, like user: and customer: —as long as they share a compatible schema.
 
+---
+Note: 
+
 
 #### III. Dual interfaces 
 As far as querying is concerned, there are two interfaces: 
@@ -477,8 +480,14 @@ await redis.sendCommand([
 --- 
 Note: 
 
+1. `redis.ft.search(index, query, options)` always returns in `{ total: n, documents: [value, ...]}` format which is easier to interpret, akin to Prisma [CRUD](https://www.prisma.io/docs/orm/prisma-client/queries/crud) interface; 
+2. `redis.sendCommand([...])` returns various formats depending on the command to call. More often than not, this involves array of array with interleaved string and/or number in between or even a page of text which makes decoding the result a challenging drudgery, akin to Prisma [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries) interface. 
+3. `redis.sendCommand([...])` *only* accept an array of string where Number must be wrapped by quotation mark. You can practically do everything with `redis.sendCommand([...])` in the same way as [Redis CLI](https://redis.io/docs/latest/develop/tools/cli/). 
+
 
 #### IV. Seeding 
+Using the same set of 1,200 Chinese sentences, go ahead to seed Redis. 
+
 `seedRedis.js`
 ```
 import { redis } from './redis/redis.js'
@@ -520,10 +529,25 @@ console.log('Seeding finished!')
 
 await redis.close()
 ```
-checkIndex() and createIndex() 
 
+Seeding also takes care of index creation. Two functions `checkIndex()` and `createIndex()` are worth noting: 
 
-A cheap trick is used to implement UPSERT in MariaDB
+`redisHelper.js`
+```
+export async function checkIndex() {
+   const indexList = await redis.ft._list()
+
+   return indexList.includes(getIndexName())
+}
+
+export async function createIndex() {
+   const redisCommand = `FT.CREATE ${getIndexName()} ON HASH PREFIX 1 ${getDocumentKeyName('')} LANGUAGE chinese SCHEMA id NUMERIC SORTABLE textChi TEXT WEIGHT 1.0 SORTABLE visited NUMERIC SORTABLE createdAt TAG SORTABLE updatedAt TAG SORTABLE updateIdent NUMERIC SORTABLE`
+
+   return await redis.sendCommand(redisCommand.split(' '))
+}
+```
+
+Previously, we have used a cheap trick to implement UPSERT while seeding  MariaDB:
 ```
 // Add new document
     return await prisma.$executeRaw`
@@ -533,6 +557,25 @@ A cheap trick is used to implement UPSERT in MariaDB
                     UPDATE updateIdent = updateIdent + 1;
               `;              
 ```
+
+There is no difference between insert and update in Redis and let alone UPSERT. Later calls to `hSet` simply override the previous one. If it matters to you, use this: 
+```
+    const exists = await redis.exists(getDocumentKeyName(i + 1));
+    if (!exists) {
+        await redis.hSet(getDocumentKeyName(i + 1), {
+                id: i + 1, 
+                textChi: documents[i],        
+                visited:   0, 
+                createdAt: isoDate, 
+                updatedAt: "", 
+                updateIdent: 0
+            } )
+    } else {
+      await redis.hIncrBy(getDocumentKeyName(i + 1), 'updateIdent', 1)
+    }
+```
+
+To mimic the behavior; 
 
 
 #### V. Querying 
