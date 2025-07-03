@@ -673,10 +673,15 @@ Enjoy!
 
 [Back to part 1](README.2.md)
 
+**PS:**
 
+If you follow along to this point that means you are a great fan of me --- an old and jaded journeyman. To conclude our journal with a list of articles: 
+1. [Vector Semantic Search in Chinese using MariaDB](README.md)
+2. [Fulltext Search in Chinese using MariaDB](README.2.md)
+3. [Fulltext Search in Chinese using Oracle 19c](README.3.md)
+4. [Fulltext Search in Chinese using Redis](README.4.md)
 
-1. List of articles 
-2. Box of Pandora
+As a last [bonus](README.cont.md), any RDBMS with capability of storing array of float and supports user defined function can be used to implement Vector Semantic Search so to speak, but performance may vary of course. 
 
 
 #### VII. Bibliograhy 
