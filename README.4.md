@@ -687,7 +687,7 @@ If you follow along to this point that means you are a great fan of me --- an ol
 3. [Fulltext Search in Chinese using Oracle 19c](README.3.md)
 4. [Fulltext Search in Chinese using Redis](README.4.md)
 
-As a last [bonus](README.cont.md), any RDBMS with capability of storing array of float and supports user defined function can be used to implement Vector Semantic Search so to speak, but performance may vary of course. 
+As a last [bonus](README.cont.md), any RDBMS capable of storing array of float and supports user defined function can be used to implement Vector Semantic Search so to speak, but performance varies, of course. 
 
 
 #### VII. Bibliograhy 
@@ -700,6 +700,8 @@ As a last [bonus](README.cont.md), any RDBMS with capability of storing array of
 
 #### Epilogue 
 "Study things carefully and you will see their difference. More importantly is to know WHY they are different. For everything has a reason.. "
+
+"It's a kind of superstitious, superstitious in science and betrayal of common sense..."
 
 [Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
 
