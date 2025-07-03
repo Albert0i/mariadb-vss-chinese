@@ -587,11 +587,70 @@ To mimic the behavior.
 
 
 #### V. Querying 
-
+`redisHelper.js`
 ```
+export async function findDocuments(query, offset=0, limit = 10) {
+    const indexName = getIndexName()
+    const redisCommand = [ 'FT.SEARCH', indexName, query.trim(), 'WITHSCORES', 'RETURN', '2', 'textChi', 'id', 'LIMIT', offset.toString(), limit.toString() ]
+
+    // Find documents 
+    const searchResults = await redis.sendCommand(redisCommand);
+    // “Even the straightest road has its twist.”
+    const docs = twist(searchResults)
+ 
+    // Update `visited` field
+    const promises = [];    // Collect promises 
+    docs.forEach(doc => { 
+         const docKey = getDocumentKeyName(doc.id)
+         const now = new Date(); 
+         const isoDate = now.toISOString(); 
+
+         // Use transaction
+         promises.push( 
+                        redis.multi()
+                        .hIncrBy(docKey, 'visited', 1)
+                        .hSet(docKey, 'updatedAt', isoDate)
+                        .hIncrBy(docKey, 'updateIdent', 1)
+                        .exec()
+            )
+        })
+    await Promise.all(promises); // Resolve all at once
+    
+    return docs
+ }
+ 
+ export async function countDocuments(query='*') { 
+   const indexName = getIndexName()
+    // Count documents 
+    // { total: n, documents: [value, ...] }
+    const { total } = await redis.ft.search(indexName, query.trim(), {
+       NOCONTENT: true,
+       LIMIT: {
+          from: 0, // Offset
+          size: 0  // Number of results to return
+       }
+   }); 
+ 
+   return total
+ }
 ```
 
 #### VI. Bonus 
+Start the server: 
+```
+npm run dev 
+```
+
+And navigate to [http://localhost:3000/ftsredis](http://localhost:3000/ftsredis): 
+
+![alt ftsredis](img/ftsredis.JPG)
+
+Enjoy! 
+
+[Back to part 1](README.2.md)
+
+
+
 1. List of articles 
 2. Box of Pandora
 

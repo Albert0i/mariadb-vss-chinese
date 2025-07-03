@@ -348,7 +348,7 @@ And navigate to [http://localhost:3000/ftsearch](http://localhost:3000/ftsearch)
 
 Enjoy! 
 
-[Continue to part 3](README.3.md)
+[Continue to part 2](README.3.md)
 
 
 #### VII. Bibliography 

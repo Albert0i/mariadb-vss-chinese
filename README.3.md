@@ -264,7 +264,7 @@ EXEC CTX_DDL.SYNC_INDEX('ft_textChiSeg');
 - Use `SCORE()` to sort search results by relevance
 - Sync the index when your data changes
 
-[Continue to part 4](README.4.md)
+[Continue to part 3](README.4.md)
 
 
 #### VII. Bibliography
