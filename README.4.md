@@ -303,7 +303,7 @@ FT.CREATE people_idx ON HASH
 ```
 > RediSearch fully supports indexing across **multiple key prefixes** using the `PREFIX` option in `FT.CREATE`. This allows you to build a single unified index that spans different logical datasets, like user: and customer: —as long as they share a compatible schema.
 
-5. To choose `HASH` instead of `JSON` because it is the most similar data structure to RDBMS table. `HASH` has its downside: 
+5. Use `HASH` instead of `JSON` because it is the most similar data structure to RDBMS table. However, `HASH` has its own downside: 
 - All values are stored as String;
 - Can not have embedded object. 
 
