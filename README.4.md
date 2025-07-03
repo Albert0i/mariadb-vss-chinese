@@ -486,7 +486,7 @@ Note:
 
 
 #### IV. Seeding 
-Using the same set of 1,200 Chinese sentences, go ahead to seed Redis. 
+Using the same set of 1,200 Chinese sentences, go ahead to seed Redis with. 
 
 `seedRedis.js`
 ```
@@ -530,10 +530,18 @@ console.log('Seeding finished!')
 await redis.close()
 ```
 
-Seeding also takes care of index creation. Two functions `checkIndex()` and `createIndex()` are worth noting: 
+It also takes care of index creation. Two functions `checkIndex()` and `createIndex()` are worth noting: 
 
 `redisHelper.js`
 ```
+export function getIndexName() {
+   return 'fts:chinese:index';
+}
+
+export function getDocumentKeyName(id) {
+    return `fts:chinese:documents:${id}`
+}
+
 export async function checkIndex() {
    const indexList = await redis.ft._list()
 
@@ -547,7 +555,7 @@ export async function createIndex() {
 }
 ```
 
-Previously, we have used a cheap trick to implement UPSERT while seeding  MariaDB:
+Previously, we played trick to implement `UPSERT` while seeding  MariaDB:
 ```
 // Add new document
     return await prisma.$executeRaw`
@@ -558,7 +566,7 @@ Previously, we have used a cheap trick to implement UPSERT while seeding  MariaD
               `;              
 ```
 
-There is no difference between insert and update in Redis and let alone UPSERT. Later calls to `hSet` simply override the previous one. If it matters to you, use this: 
+There is no difference between insert and update in Redis and let alone `UPSERT`. Later call to `hSet` effectively overrides the previous one. If it matters to you, use this: 
 ```
     const exists = await redis.exists(getDocumentKeyName(i + 1));
     if (!exists) {
@@ -575,7 +583,7 @@ There is no difference between insert and update in Redis and let alone UPSERT. 
     }
 ```
 
-To mimic the behavior; 
+To mimic the behavior. 
 
 
 #### V. Querying 
