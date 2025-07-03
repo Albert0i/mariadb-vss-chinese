@@ -667,6 +667,8 @@ And navigate to [http://localhost:3000/ftsredis](http://localhost:3000/ftsredis)
 
 ![alt ftsredis](img/ftsredis.JPG)
 
+And [http://localhost:3000/statsredis](http://localhost:3000/statsredis)
+
 Enjoy! 
 
 [Back to part 1](README.2.md)
