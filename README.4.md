@@ -645,7 +645,7 @@ Previously, we have used SQL to update a visited document:
       WHERE id=${doc.id}
 ```
 
-There is no corresponding command in Redis. Therefore, a transaction is used to wrap them to that Redis will treat them as a single action and maintain the atomicity. 
+There is no corresponding command in Redis. Therefore, a transaction is used to wrap them together so that Redis will treat them as a single action and maintain the atomicity. 
 ```
       redis.multi()
       .hIncrBy(docKey, 'visited', 1)
@@ -657,7 +657,7 @@ There is no corresponding command in Redis. Therefore, a transaction is used to 
 # “Even the straightest road has its twist.”
 
 
-#### VI. Bonus 
+#### VI. Wrap-Up
 Start the server: 
 ```
 npm run dev 
@@ -684,15 +684,11 @@ Enjoy!
 4. [Node-Redis](https://www.npmjs.com/package/redis)
 5. [The Castle by Franz Kafka](https://files.libcom.org/files/Franz%20Kafka-The%20Castle%20(Oxford%20World's%20Classics)%20(2009).pdf)
 
-[Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
-
-
-
-
-#### II. Create a full-text index
-[FTCREATE Helper](https://albert0i.github.io/src/FTCREATE.html)
 
 #### Epilogue 
+"Study things carefully and you will see their difference. More importantly is to know WHY they are different. For everything has a reason.. "
+
+[Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
 
 
 ### EOF (2025/07/04)
