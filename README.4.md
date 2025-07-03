@@ -265,7 +265,7 @@ FT.CREATE fts:chinese:index
     updatedAt TAG SORTABLE 
     updateIdent NUMERIC SORTABLE 
 ```
-**Caveat**
+**Note**
 
 1. `LANGUAGE chinese` is required, obviously; 
 2. Only fields to be searched should be indexed; 
@@ -299,8 +299,11 @@ FT.CREATE people_idx ON HASH
 ```
 > RediSearch fully supports indexing across **multiple key prefixes** using the `PREFIX` option in `FT.CREATE`. This allows you to build a single unified index that spans different logical datasets, like user: and customer: —as long as they share a compatible schema.
 
----
-Note: 
+5. To choose `HASH` instead of `JSON` because it is the most similar data structure to RDBMS table. `HASH` has its downside: 
+- All values are stored as String;
+- Can not have embedded object. 
+
+If it matters, choose JSON. 
 
 
 #### III. Dual interfaces 
@@ -477,8 +480,7 @@ await redis.sendCommand([
 | Error handling       | ✅ Safer with validation       | ❌ Manual formatting required      |
 | Use case             | Standard queries               | Advanced/custom/dialect queries    |
 
---- 
-Note: 
+**Note**
 
 1. `redis.ft.search(index, query, options)` always returns in `{ total: integer, documents: [ { id:string, value:object }, ...]}` format which is easier to interpret, akin to Prisma [CRUD](https://www.prisma.io/docs/orm/prisma-client/queries/crud) interface; 
 2. `redis.sendCommand([...])` *only* accept an array of string where Number must be wrapped by quotation mark. You can practically do everything with `redis.sendCommand([...])` in the same way as [Redis CLI](https://redis.io/docs/latest/develop/tools/cli/), akin to Prisma [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries) interface. 
