@@ -481,8 +481,8 @@ await redis.sendCommand([
 Note: 
 
 1. `redis.ft.search(index, query, options)` always returns in `{ total: n, documents: [value, ...]}` format which is easier to interpret, akin to Prisma [CRUD](https://www.prisma.io/docs/orm/prisma-client/queries/crud) interface; 
-2. `redis.sendCommand([...])` returns various formats depending on the command to call. More often than not, this involves array of array with interleaved string and/or number in between or even a page of text which makes decoding the result a challenging drudgery, akin to Prisma [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries) interface. 
-3. `redis.sendCommand([...])` *only* accept an array of string where Number must be wrapped by quotation mark. You can practically do everything with `redis.sendCommand([...])` in the same way as [Redis CLI](https://redis.io/docs/latest/develop/tools/cli/). 
+2. `redis.sendCommand([...])` *only* accept an array of string where Number must be wrapped by quotation mark. You can practically do everything with `redis.sendCommand([...])` in the same way as [Redis CLI](https://redis.io/docs/latest/develop/tools/cli/), akin to Prisma [Raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries) interface. 
+3. `redis.sendCommand([...])` returns various formats depending on the command to call. More often than not, this involves array of array with interleaved string and/or number in between or even a page of text which makes decoding the result a challenging drudgery. 
 
 
 #### IV. Seeding 
