@@ -310,7 +310,7 @@ FT.CREATE people_idx ON HASH
 If it matters, choose JSON. 
 
 
-#### III. Dual interfaces 
+#### IV. Dual interfaces 
 As far as querying is concerned, there are two interfaces: 
 
 ##### 1. `redis.ft.search(index, query, options)`
@@ -491,7 +491,7 @@ await redis.sendCommand([
 3. `redis.sendCommand([...])` returns various formats depending on the command to call. More often than not, this involves array of array with interleaved string and/or number in between or even a page of text which makes decoding the result a challenging drudgery. 
 
 
-#### IV. Seeding 
+#### V. Seeding 
 Using the same set of 1,200 Chinese sentences, go ahead to seed Redis with. 
 
 `seedRedis.js`
@@ -592,7 +592,7 @@ There is no difference between insert and update in Redis and let alone `UPSERT`
 To mimic the behavior. 
 
 
-#### V. Querying 
+#### VI. Querying 
 `redisHelper.js`
 ```
 export async function findDocuments(query, offset=0, limit = 10) {
@@ -663,7 +663,7 @@ There is no corresponding command in Redis. Therefore, a transaction is used to 
 # “Even the straightest road has its twist.”
 
 
-#### VI. Wrap-Up
+#### VII. Wrap-Up
 Start the server: 
 ```
 npm run dev 
@@ -690,7 +690,7 @@ If you follow along to this point that means you are a great fan of me --- an ol
 As a last [bonus](README.cont.md), any RDBMS capable of storing array of float and supports user defined function can be used to implement Vector Semantic Search so to speak, but performance varies, of course. 
 
 
-#### VII. Bibliograhy 
+#### VIII. Bibliograhy 
 1. [Redis Query Engine](https://redis.io/docs/latest/develop/ai/search-and-query/)
 2. [FT.CREATE](https://redis.io/docs/latest/commands/ft.create/)
 3. [FT.SEARCH](https://redis.io/docs/latest/commands/ft.search/)
