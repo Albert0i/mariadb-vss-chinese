@@ -701,9 +701,11 @@ As a last [bonus](README.cont.md), any RDBMS capable of storing array of float a
 #### Epilogue 
 "Study things carefully and you will see their difference. More importantly is to know WHY they are different. For everything has a reason.. "
 
-"It's a kind of superstitious, superstitious in science and betrayal of common sense..."
-
 [Modern Redis Crash Course: Backend with Express, TypeScript and Zod]()
+
+![alt create index](img/createIndex-1.JPG)
+
+"It's a kind of superstitious, superstitious in science and betrayal of common sense..."
 
 
 ### EOF (2025/07/04)
